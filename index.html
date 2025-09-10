@@ -75,7 +75,6 @@
             <a role="menuitem" href="#contact" class="nav-link">Contact</a>
           </div>
         </nav>
-        <button class="theme-toggle" type="button" aria-label="Toggle theme">Theme</button>
       </div>
     </header>
 
@@ -84,8 +83,7 @@
       <section class="hero" aria-labelledby="hero-title">
         <div class="container hero-wrap reveal">
           <div>
-            <span class="hero-badge" aria-hidden="true">Joyful Learning</span>
-            <h1 id="hero-title" class="hero-title-gradient">Jolly Children Academic Center, Inc.</h1>
+            <h1 id="hero-title">Jolly Children Academic Center, Inc.</h1>
             <p class="lead">Nurturing bright minds and big hearts.</p>
             <div class="cta" role="group" aria-label="Primary actions">
               <a class="btn" href="#about">Learn More</a>
@@ -379,12 +377,7 @@
       </section>
     </main>
 
-    <!-- Wave separator before footer -->
-    <div class="wave-separator" aria-hidden="true">
-      <svg viewBox="0 0 1440 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-        <path fill="var(--surface)" d="M0,32L48,42.7C96,53,192,75,288,80C384,85,480,75,576,80C672,85,768,107,864,112C960,117,1056,107,1152,96C1248,85,1344,75,1392,69.3L1440,64L1440,120L1392,120C1344,120,1248,120,1152,120C1056,120,960,120,864,120C768,120,672,120,576,120C480,120,384,120,288,120C192,120,96,120,48,120L0,120Z" />
-      </svg>
-    </div>
+    
 
     <footer role="contentinfo">
       <div class="container footer-grid">
@@ -601,24 +594,13 @@
         });
       })();
 
-      // Announcement bar and theme toggle
+      // Announcement bar (no theme toggle)
       (function() {
         const bar = document.getElementById('announce');
         const dismiss = bar && bar.querySelector('.dismiss');
         const key = 'jcac_banner_dismissed_v1';
         if (bar && !localStorage.getItem(key)) { bar.hidden = false; }
         dismiss && dismiss.addEventListener('click', () => { localStorage.setItem(key, '1'); bar.hidden = true; });
-
-        const root = document.documentElement;
-        const themeBtn = document.querySelector('.theme-toggle');
-        const themeKey = 'jcac_theme_v1';
-        const saved = localStorage.getItem(themeKey);
-        if (saved) root.setAttribute('data-theme', saved === 'dark' ? 'dark' : 'light');
-        themeBtn && themeBtn.addEventListener('click', () => {
-          const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-          if (next === 'light') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', 'dark');
-          localStorage.setItem(themeKey, next);
-        });
       })();
 
       // Stats count-up when visible
