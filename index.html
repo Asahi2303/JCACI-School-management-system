@@ -39,6 +39,15 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <!-- Announcement bar (dismissible) -->
+    <div class="announce" role="region" aria-label="Announcement" id="announce" hidden>
+      <div class="container">
+        <div>
+          Enrollment for SY 2025–2026 is now open. Visit Admissions to get started!
+        </div>
+        <button class="dismiss" type="button" aria-label="Dismiss announcement">Dismiss</button>
+      </div>
+    </div>
     <!--
       Accessible sticky header with brand and navigation.
       Update nav links if you change section IDs.
@@ -66,15 +75,17 @@
             <a role="menuitem" href="#contact" class="nav-link">Contact</a>
           </div>
         </nav>
+        <button class="theme-toggle" type="button" aria-label="Toggle theme">Theme</button>
       </div>
     </header>
 
     <main id="home" tabindex="-1">
       <!-- Hero Section -->
       <section class="hero" aria-labelledby="hero-title">
-        <div class="container hero-wrap">
+        <div class="container hero-wrap reveal">
           <div>
-            <h1 id="hero-title">Jolly Children Academic Center, Inc.</h1>
+            <span class="hero-badge" aria-hidden="true">Joyful Learning</span>
+            <h1 id="hero-title" class="hero-title-gradient">Jolly Children Academic Center, Inc.</h1>
             <p class="lead">Nurturing bright minds and big hearts.</p>
             <div class="cta" role="group" aria-label="Primary actions">
               <a class="btn" href="#about">Learn More</a>
@@ -82,16 +93,16 @@
             </div>
           </div>
           <div class="hero-card" aria-hidden="false">
-            <div class="hero-img" role="img" aria-label="Abstract green learning illustration">
+            <button class="hero-img hero-lightbox-trigger" aria-label="Open hero image">
               <!-- Optional: Replace with an accessible image below -->
               <!-- <img src="https://via.placeholder.com/800x500.png?text=Welcome+to+Jolly+Children" alt="Students learning together in a bright classroom" /> -->
-            </div>
+            </button>
           </div>
         </div>
       </section>
 
       <!-- About Us -->
-      <section id="about" class="container" aria-labelledby="about-title">
+      <section id="about" class="container reveal" aria-labelledby="about-title">
         <div class="section-header">
           <h2 id="about-title">About Us</h2>
           <p class="lead">We are a joyful, student‑centered community committed to excellent, inclusive education.</p>
@@ -157,42 +168,76 @@
         </div>
       </section>
 
+      <!-- Stats Section -->
+      <section class="container reveal" aria-labelledby="stats-title">
+        <div class="section-header">
+          <h2 id="stats-title">At a Glance</h2>
+          <p class="lead">A joyful place to learn and grow.</p>
+        </div>
+        <div class="stats" aria-label="School statistics">
+          <div class="stat">
+            <div class="num" data-count="450">0</div>
+            <div class="label">Happy Students</div>
+          </div>
+          <div class="stat">
+            <div class="num" data-count="48">0</div>
+            <div class="label">Caring Staff</div>
+          </div>
+          <div class="stat">
+            <div class="num" data-count="15">0</div>
+            <div class="label">Clubs & Teams</div>
+          </div>
+          <div class="stat">
+            <div class="num" data-count="12">0</div>
+            <div class="label">Years of Joy</div>
+          </div>
+        </div>
+      </section>
+
       <!-- Academics -->
-      <section id="academics" class="container" aria-labelledby="academics-title">
+      <section id="academics" class="container reveal" aria-labelledby="academics-title">
         <div class="section-header">
           <h2 id="academics-title">Academics</h2>
           <p class="lead">Programs that grow with your child from early years to middle school.</p>
         </div>
-        <div class="grid cols-3">
-          <article class="card" aria-label="Preschool / Early Childhood">
+        <!-- Filter chips (interactive) -->
+        <div class="chip-group" role="group" aria-label="Filter programs">
+          <button class="chip" type="button" data-filter="all" aria-pressed="true">All</button>
+          <button class="chip" type="button" data-filter="early">Early Childhood</button>
+          <button class="chip" type="button" data-filter="elementary">Elementary</button>
+          <button class="chip" type="button" data-filter="middle">Middle School</button>
+          <button class="chip" type="button" data-filter="enrichment">Enrichment</button>
+        </div>
+        <div class="grid cols-3" id="academics-grid">
+          <article class="card" data-tags="early" aria-label="Preschool / Early Childhood">
             <div class="icon" aria-hidden="true">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2 2 7l10 5 10-5-10-5Zm0 20V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
             <h3>Preschool / Early Childhood</h3>
             <p>Play‑rich experiences that build language, numeracy, and social skills.</p>
           </article>
-          <article class="card" aria-label="Elementary">
+          <article class="card" data-tags="elementary" aria-label="Elementary">
             <div class="icon" aria-hidden="true">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 21v-8l8-4 8 4v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
             <h3>Elementary</h3>
             <p>Strong foundations in literacy, math, science, and creative expression.</p>
           </article>
-          <article class="card" aria-label="Middle School">
+          <article class="card" data-tags="middle" aria-label="Middle School">
             <div class="icon" aria-hidden="true">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5-5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
             <h3>Middle School</h3>
             <p>Inquiry projects, leadership, and deeper study across disciplines.</p>
           </article>
-          <article class="card" aria-label="Special Programs & Support">
+          <article class="card" data-tags="enrichment" aria-label="Special Programs & Support">
             <div class="icon" aria-hidden="true">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 8v8m-4-4h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
             </div>
             <h3>Special Programs & Support</h3>
             <p>Targeted supports and enrichment to meet diverse learning needs.</p>
           </article>
-          <article class="card" aria-label="Clubs & Activities">
+          <article class="card" data-tags="enrichment" aria-label="Clubs & Activities">
             <div class="icon" aria-hidden="true">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
@@ -202,8 +247,41 @@
         </div>
       </section>
 
+      <!-- Testimonials Carousel -->
+      <section class="container reveal" aria-labelledby="testimonials-title">
+        <div class="section-header">
+          <h2 id="testimonials-title">What Families Say</h2>
+          <p class="lead">Voices from our community.</p>
+        </div>
+        <div class="carousel" aria-roledescription="carousel" aria-label="Testimonials">
+          <div class="carousel-track" id="carousel-track">
+            <figure class="slide" aria-roledescription="slide" aria-label="1 of 3">
+              <blockquote>Our child runs to school every day—teachers truly care.</blockquote>
+              <figcaption>— Parent of Grade 2 student</figcaption>
+            </figure>
+            <figure class="slide" aria-roledescription="slide" aria-label="2 of 3">
+              <blockquote>Engaging lessons and a warm, inclusive community.</blockquote>
+              <figcaption>— Parent of Kinder student</figcaption>
+            </figure>
+            <figure class="slide" aria-roledescription="slide" aria-label="3 of 3">
+              <blockquote>The balance of academics and arts has been wonderful.</blockquote>
+              <figcaption>— Parent of Grade 6 student</figcaption>
+            </figure>
+          </div>
+          <div class="carousel-controls">
+            <button class="carousel-btn" id="prev" aria-label="Previous slide">Prev</button>
+            <div class="dots" role="tablist" aria-label="Slides">
+              <button class="dot" role="tab" aria-controls="slide-1" aria-selected="true"></button>
+              <button class="dot" role="tab" aria-controls="slide-2"></button>
+              <button class="dot" role="tab" aria-controls="slide-3"></button>
+            </div>
+            <button class="carousel-btn" id="next" aria-label="Next slide">Next</button>
+          </div>
+        </div>
+      </section>
+
       <!-- Admissions -->
-      <section id="admissions" class="container" aria-labelledby="admissions-title">
+      <section id="admissions" class="container reveal" aria-labelledby="admissions-title">
         <div class="section-header">
           <h2 id="admissions-title">Admissions</h2>
           <p class="lead">Your path to joining our community, step by step.</p>
@@ -259,7 +337,7 @@
       </section>
 
       <!-- Contact -->
-      <section id="contact" class="container" aria-labelledby="contact-title">
+      <section id="contact" class="container reveal" aria-labelledby="contact-title">
         <div class="section-header">
           <h2 id="contact-title">Contact</h2>
           <p class="lead">We’re here to help—reach out anytime.</p>
@@ -271,7 +349,7 @@
             <ul class="contact-list" aria-label="School contact information">
               <li><strong>Address:</strong> 123 Greenway Lane, Learning City, 00000</li>
               <li><strong>Phone:</strong> (000) 123‑4567</li>
-              <li><strong>Email:</strong> hello@jollychildren.edu</li>
+              <li><strong>Email:</strong> <span id="school-email">hello@jollychildren.edu</span> <span class="inline-actions"><button type="button" class="copy-btn" data-copy="#school-email">Copy</button></span></li>
               <li><strong>Office Hours:</strong> Mon–Fri, 8:00 AM – 4:00 PM</li>
             </ul>
             <iframe class="map" title="Map to Jolly Children Academic Center" loading="lazy" allowfullscreen
@@ -301,6 +379,13 @@
       </section>
     </main>
 
+    <!-- Wave separator before footer -->
+    <div class="wave-separator" aria-hidden="true">
+      <svg viewBox="0 0 1440 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <path fill="var(--surface)" d="M0,32L48,42.7C96,53,192,75,288,80C384,85,480,75,576,80C672,85,768,107,864,112C960,117,1056,107,1152,96C1248,85,1344,75,1392,69.3L1440,64L1440,120L1392,120C1344,120,1248,120,1152,120C1056,120,960,120,864,120C768,120,672,120,576,120C480,120,384,120,288,120C192,120,96,120,48,120L0,120Z" />
+      </svg>
+    </div>
+
     <footer role="contentinfo">
       <div class="container footer-grid">
         <div>
@@ -329,11 +414,11 @@
 
     <!-- Back to top button -->
     <a href="#home" class="btn back-to-top" aria-label="Back to top">Top</a>
-
-    <!-- Screen reader only utility -->
-    <style>
-      .sr-only { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px !important; overflow: hidden !important; clip: rect(0, 0, 0, 0) !important; white-space: nowrap !important; border: 0 !important; }
-    </style>
+    <div class="toast" role="status" aria-live="polite" aria-atomic="true" id="toast" hidden>Copied to clipboard</div>
+    <div class="lightbox" id="lightbox" aria-modal="true" role="dialog" aria-label="Image preview">
+      <button class="close" aria-label="Close">✕</button>
+      <img alt="Preview" src="https://via.placeholder.com/1200x750.png?text=Jolly+Children" />
+    </div>
 
     <script>
       // Utility: set current year
@@ -437,6 +522,158 @@
           });
           // Keyboard support via button element suffices (Space/Enter handled by browser)
         });
+      })();
+
+      // Scroll reveal animations (reduced-motion aware)
+      (function() {
+        const items = document.querySelectorAll('.reveal');
+        if (!items.length) return;
+        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReduced || !('IntersectionObserver' in window)) {
+          items.forEach(i => i.classList.add('in-view'));
+          return;
+        }
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in-view'); io.unobserve(e.target); } });
+        }, { threshold: 0.1, rootMargin: '0px 0px -10% 0px' });
+        items.forEach(i => io.observe(i));
+      })();
+
+      // Academics filter chips
+      (function() {
+        const group = document.querySelector('.chip-group');
+        const cards = document.querySelectorAll('#academics-grid .card');
+        if (!group || !cards.length) return;
+        group.addEventListener('click', (e) => {
+          const btn = e.target.closest('.chip');
+          if (!btn) return;
+          const filter = btn.getAttribute('data-filter');
+          const chips = group.querySelectorAll('.chip');
+          chips.forEach(c => c.setAttribute('aria-pressed', String(c === btn)));
+          cards.forEach(card => {
+            const tags = (card.getAttribute('data-tags') || '').split(',');
+            const show = filter === 'all' || tags.includes(filter);
+            card.style.display = show ? '' : 'none';
+          });
+        });
+      })();
+
+      // FAQ deep-link via hash
+      (function() {
+        function openFromHash() {
+          const id = location.hash.replace('#', '');
+          if (!id) return;
+          const header = document.getElementById(id + '-header');
+          const panel = document.getElementById(id);
+          if (header && panel) {
+            header.setAttribute('aria-expanded', 'true');
+            panel.hidden = false;
+            setTimeout(() => header.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0);
+          }
+        }
+        window.addEventListener('hashchange', openFromHash);
+        openFromHash();
+      })();
+
+      // Copy to clipboard with toast
+      (function() {
+        const toast = document.getElementById('toast');
+        function showToast(msg) {
+          if (!toast) return;
+          toast.textContent = msg;
+          toast.hidden = false;
+          toast.classList.add('show');
+          setTimeout(() => { toast.classList.remove('show'); toast.hidden = true; }, 1500);
+        }
+        document.addEventListener('click', async (e) => {
+          const btn = e.target.closest('[data-copy]');
+          if (!btn) return;
+          const sel = btn.getAttribute('data-copy');
+          const el = sel && document.querySelector(sel);
+          if (!el) return;
+          const text = el.textContent.trim();
+          try {
+            await navigator.clipboard.writeText(text);
+            showToast('Copied to clipboard');
+          } catch {
+            showToast('Press Ctrl+C to copy');
+          }
+        });
+      })();
+
+      // Announcement bar and theme toggle
+      (function() {
+        const bar = document.getElementById('announce');
+        const dismiss = bar && bar.querySelector('.dismiss');
+        const key = 'jcac_banner_dismissed_v1';
+        if (bar && !localStorage.getItem(key)) { bar.hidden = false; }
+        dismiss && dismiss.addEventListener('click', () => { localStorage.setItem(key, '1'); bar.hidden = true; });
+
+        const root = document.documentElement;
+        const themeBtn = document.querySelector('.theme-toggle');
+        const themeKey = 'jcac_theme_v1';
+        const saved = localStorage.getItem(themeKey);
+        if (saved) root.setAttribute('data-theme', saved === 'dark' ? 'dark' : 'light');
+        themeBtn && themeBtn.addEventListener('click', () => {
+          const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          if (next === 'light') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', 'dark');
+          localStorage.setItem(themeKey, next);
+        });
+      })();
+
+      // Stats count-up when visible
+      (function() {
+        const nums = document.querySelectorAll('.stat .num');
+        if (!nums.length || !('IntersectionObserver' in window)) return;
+        const io = new IntersectionObserver((entries, obs) => {
+          entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            const el = entry.target; const target = parseInt(el.getAttribute('data-count'), 10) || 0;
+            const start = 0; const duration = 1000; const t0 = performance.now();
+            function tick(now) {
+              const p = Math.min(1, (now - t0) / duration);
+              el.textContent = Math.floor(start + (target - start) * p).toLocaleString();
+              if (p < 1) requestAnimationFrame(tick);
+            }
+            requestAnimationFrame(tick);
+            obs.unobserve(el);
+          });
+        }, { threshold: 0.2 });
+        nums.forEach(n => io.observe(n));
+      })();
+
+      // Testimonials carousel
+      (function() {
+        const track = document.getElementById('carousel-track');
+        const prev = document.getElementById('prev');
+        const next = document.getElementById('next');
+        const dots = Array.from(document.querySelectorAll('.dot'));
+        if (!track || !prev || !next || !dots.length) return;
+        let index = 0; const total = dots.length;
+        function update() {
+          track.style.transform = `translateX(${-100 * index}%)`;
+          dots.forEach((d, i) => d.classList.toggle('active', i === index));
+          dots.forEach((d, i) => d.setAttribute('aria-selected', String(i === index)));
+        }
+        prev.addEventListener('click', () => { index = (index - 1 + total) % total; update(); });
+        next.addEventListener('click', () => { index = (index + 1) % total; update(); });
+        dots.forEach((d, i) => d.addEventListener('click', () => { index = i; update(); }));
+        update();
+        let timer = setInterval(() => { index = (index + 1) % total; update(); }, 6000);
+        track.addEventListener('mouseenter', () => clearInterval(timer));
+        track.addEventListener('mouseleave', () => { timer = setInterval(() => { index = (index + 1) % total; update(); }, 6000); });
+      })();
+
+      // Lightbox for hero image
+      (function() {
+        const trigger = document.querySelector('.hero-lightbox-trigger');
+        const lb = document.getElementById('lightbox');
+        const close = lb && lb.querySelector('.close');
+        if (!trigger || !lb || !close) return;
+        trigger.addEventListener('click', () => { lb.classList.add('open'); });
+        close.addEventListener('click', () => { lb.classList.remove('open'); });
+        lb.addEventListener('click', (e) => { if (e.target === lb) lb.classList.remove('open'); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') lb.classList.remove('open'); });
       })();
     </script>
   </body>
