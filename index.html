@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!--
+      Jolly Children Academic Center, Inc. — Single Page Website
+      Tech: Pure HTML5, CSS3, and minimal vanilla JS. One self-contained file.
+      Notes:
+      - Edit text content directly in sections below.
+      - Colors are controlled via CSS variables in :root.
+      - Accessible, responsive, mobile‑first, with reduced‑motion support.
+    -->
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Jolly Children Academic Center, Inc.</title>
+    <meta name="description" content="Jolly Children Academic Center, Inc. nurtures bright minds and big hearts through inclusive, engaging learning from early childhood to middle school." />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Jolly Children Academic Center, Inc." />
+    <meta property="og:description" content="Nurturing bright minds and big hearts across vibrant, inclusive programs." />
+    <meta property="og:image" content="https://via.placeholder.com/1200x630.png?text=Jolly+Children+Academic+Center" />
+    <meta property="og:url" content="https://example.com" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Jolly Children Academic Center, Inc." />
+    <meta name="twitter:description" content="Nurturing bright minds and big hearts across vibrant, inclusive programs." />
+    <meta name="twitter:image" content="https://via.placeholder.com/1200x630.png?text=Jolly+Children+Academic+Center" />
+
+    <!-- Favicon placeholder -->
+    <link rel="icon" href="/favicon.ico" />
+
+    <!-- Google Fonts: Poppins (headings) and Inter (body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Poppins:wght@600;700&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!--
+      Accessible sticky header with brand and navigation.
+      Update nav links if you change section IDs.
+    -->
+    <header class="site-header" role="banner">
+      <div class="container nav">
+        <a class="brand" href="#home">
+          <span class="brand-logo" aria-hidden="true">J</span>
+          <span class="brand-text">Jolly Children Academic Center, Inc.</span>
+        </a>
+
+        <!-- Mobile menu toggle -->
+        <button class="menu-toggle" aria-expanded="false" aria-controls="primary-navigation">
+          <span class="bars" aria-hidden="true"><span class="bar"></span></span>
+          <span class="sr-only">Menu</span>
+        </button>
+
+        <!-- Primary navigation -->
+        <nav id="primary-navigation" class="nav-panel" aria-label="Primary">
+          <div class="nav-links" role="menubar">
+            <a role="menuitem" href="#home" class="nav-link">Home</a>
+            <a role="menuitem" href="#about" class="nav-link">About Us</a>
+            <a role="menuitem" href="#academics" class="nav-link">Academics</a>
+            <a role="menuitem" href="#admissions" class="nav-link">Admissions</a>
+            <a role="menuitem" href="#contact" class="nav-link">Contact</a>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main id="home" tabindex="-1">
+      <!-- Hero Section -->
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="container hero-wrap">
+          <div>
+            <h1 id="hero-title">Jolly Children Academic Center, Inc.</h1>
+            <p class="lead">Nurturing bright minds and big hearts.</p>
+            <div class="cta" role="group" aria-label="Primary actions">
+              <a class="btn" href="#about">Learn More</a>
+              <a class="btn secondary" href="#admissions">Admissions</a>
+            </div>
+          </div>
+          <div class="hero-card" aria-hidden="false">
+            <div class="hero-img" role="img" aria-label="Abstract green learning illustration">
+              <!-- Optional: Replace with an accessible image below -->
+              <!-- <img src="https://via.placeholder.com/800x500.png?text=Welcome+to+Jolly+Children" alt="Students learning together in a bright classroom" /> -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- About Us -->
+      <section id="about" class="container" aria-labelledby="about-title">
+        <div class="section-header">
+          <h2 id="about-title">About Us</h2>
+          <p class="lead">We are a joyful, student‑centered community committed to excellent, inclusive education.</p>
+        </div>
+        <div class="grid">
+          <div>
+            <p>
+              Our mission is to spark curiosity and character through safe, supportive classrooms where every child belongs. We partner with families to build strong foundations in academics, social‑emotional learning, and community.
+            </p>
+            <p>
+              Our vision is for every learner to feel seen, challenged, and inspired—ready to thrive in school and in life.
+            </p>
+          </div>
+          <div>
+            <ul class="values" aria-label="Core values">
+              <li>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Curiosity
+              </li>
+              <li>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Compassion
+              </li>
+              <li>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Excellence
+              </li>
+              <li>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Integrity
+              </li>
+              <li>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Community
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Highlights -->
+        <div class="grid cols-3" style="margin-top: 1rem;">
+          <article class="card" aria-label="Safe and Inclusive">
+            <div class="icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+            </div>
+            <h3>Safe & Inclusive</h3>
+            <p>Warm, welcoming spaces where every child is respected and supported.</p>
+          </article>
+          <article class="card" aria-label="Engaging Curriculum">
+            <div class="icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 5h18M3 12h18M3 19h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <h3>Engaging Curriculum</h3>
+            <p>Balanced academics with arts, play, and inquiry‑based learning.</p>
+          </article>
+          <article class="card" aria-label="Dedicated Faculty">
+            <div class="icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm7 10v-1a6 6 0 0 0-12 0v1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <h3>Dedicated Faculty</h3>
+            <p>Experienced educators who know and celebrate each learner.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- Academics -->
+      <section id="academics" class="container" aria-labelledby="academics-title">
+        <div class="section-header">
+          <h2 id="academics-title">Academics</h2>
+          <p class="lead">Programs that grow with your child from early years to middle school.</p>
+        </div>
+        <div class="grid cols-3">
+          <article class="card" aria-label="Preschool / Early Childhood">
+            <div class="icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2 2 7l10 5 10-5-10-5Zm0 20V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <h3>Preschool / Early Childhood</h3>
+            <p>Play‑rich experiences that build language, numeracy, and social skills.</p>
+          </article>
+          <article class="card" aria-label="Elementary">
+            <div class="icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 21v-8l8-4 8 4v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <h3>Elementary</h3>
+            <p>Strong foundations in literacy, math, science, and creative expression.</p>
+          </article>
+          <article class="card" aria-label="Middle School">
+            <div class="icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5-5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <h3>Middle School</h3>
+            <p>Inquiry projects, leadership, and deeper study across disciplines.</p>
+          </article>
+          <article class="card" aria-label="Special Programs & Support">
+            <div class="icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 8v8m-4-4h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <h3>Special Programs & Support</h3>
+            <p>Targeted supports and enrichment to meet diverse learning needs.</p>
+          </article>
+          <article class="card" aria-label="Clubs & Activities">
+            <div class="icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <h3>Clubs & Activities</h3>
+            <p>Arts, athletics, and interest‑based clubs that build joy and teamwork.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- Admissions -->
+      <section id="admissions" class="container" aria-labelledby="admissions-title">
+        <div class="section-header">
+          <h2 id="admissions-title">Admissions</h2>
+          <p class="lead">Your path to joining our community, step by step.</p>
+        </div>
+
+        <!-- Steps -->
+        <div class="steps" aria-label="Admissions steps">
+          <div class="step"><div></div><div><strong>Inquire</strong><br/>Reach out with questions—our team is happy to help.</div></div>
+          <div class="step"><div></div><div><strong>Visit</strong><br/>Tour campus and experience our joyful classrooms.</div></div>
+          <div class="step"><div></div><div><strong>Apply</strong><br/>Submit an application—our admissions team will guide you.</div></div>
+          <div class="step"><div></div><div><strong>Assessment</strong><br/>A friendly, age‑appropriate skills and readiness check.</div></div>
+          <div class="step"><div></div><div><strong>Enrollment</strong><br/>Complete forms and get ready for a great year!</div></div>
+        </div>
+
+        <!-- FAQ Accordion (view‑only) -->
+        <div class="accordion" style="margin-top: 1rem;" role="region" aria-labelledby="faq-title">
+          <h3 id="faq-title" class="sr-only">Admissions FAQ</h3>
+
+          <div class="accordion-item">
+            <button class="accordion-header" aria-expanded="false" aria-controls="faq1" id="faq1-header">
+              What ages do you serve?
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div id="faq1" class="accordion-panel" role="region" aria-labelledby="faq1-header" hidden>
+              We welcome learners from preschool through middle school.
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <button class="accordion-header" aria-expanded="false" aria-controls="faq2" id="faq2-header">
+              When should we apply?
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div id="faq2" class="accordion-panel" role="region" aria-labelledby="faq2-header" hidden>
+              Applications open in the fall; rolling review continues while space remains.
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <button class="accordion-header" aria-expanded="false" aria-controls="faq3" id="faq3-header">
+              Do you offer financial assistance?
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div id="faq3" class="accordion-panel" role="region" aria-labelledby="faq3-header" hidden>
+              Yes—limited scholarships and tuition assistance are available. Please inquire.
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 1rem;">
+          <a class="btn" href="#contact">Contact Admissions</a>
+        </div>
+      </section>
+
+      <!-- Contact -->
+      <section id="contact" class="container" aria-labelledby="contact-title">
+        <div class="section-header">
+          <h2 id="contact-title">Contact</h2>
+          <p class="lead">We’re here to help—reach out anytime.</p>
+        </div>
+
+        <div class="contact-grid">
+          <div class="contact-card">
+            <h3>Get in Touch</h3>
+            <ul class="contact-list" aria-label="School contact information">
+              <li><strong>Address:</strong> 123 Greenway Lane, Learning City, 00000</li>
+              <li><strong>Phone:</strong> (000) 123‑4567</li>
+              <li><strong>Email:</strong> hello@jollychildren.edu</li>
+              <li><strong>Office Hours:</strong> Mon–Fri, 8:00 AM – 4:00 PM</li>
+            </ul>
+            <iframe class="map" title="Map to Jolly Children Academic Center" loading="lazy" allowfullscreen
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.83543450879!2d144.95373631531853!3d-37.81627974201198!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzfCsDQ5JzAyLjYiUyAxNDTCsDU3JzE0LjQiRQ!5e0!3m2!1sen!2s!4v1614643451234"></iframe>
+          </div>
+
+          <div class="contact-card" aria-labelledby="form-title">
+            <h3 id="form-title">Contact Form (Demo)</h3>
+            <form class="form" onsubmit="return false;" aria-describedby="form-note">
+              <div class="field">
+                <label for="name">Name</label>
+                <input id="name" name="name" type="text" inputmode="text" autocomplete="name" placeholder="Your full name" />
+              </div>
+              <div class="field">
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" />
+              </div>
+              <div class="field">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" placeholder="How can we help?"></textarea>
+              </div>
+              <button class="btn" type="submit" disabled aria-disabled="true" title="Demo only—no data collected">Send Message</button>
+              <p id="form-note" class="form-note">This is a demo form for display only—no data is collected.</p>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer role="contentinfo">
+      <div class="container footer-grid">
+        <div>
+          <div class="quick-links" aria-label="Quick links">
+            <a href="#home">Home</a>
+            <a href="#about">About Us</a>
+            <a href="#academics">Academics</a>
+            <a href="#admissions">Admissions</a>
+            <a href="#contact">Contact</a>
+          </div>
+          <p class="copyright">© <span id="year"></span> Jolly Children Academic Center, Inc. All rights reserved.</p>
+        </div>
+        <div class="socials" aria-label="Social media">
+          <a href="#" aria-label="Facebook">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3V2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a href="#" aria-label="Twitter">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M23 3s-2 .9-3 1 0 0 0 0c-1-1.1-2.5-1.1-3.5-.6S14.8 5 15 6c-3 .2-5.5-1-7.5-3-1 2-1 3.5.5 5C7 8 6 8 5 7.5c0 2 1.5 3.5 3.5 4-1 .5-2 .5-3 .3C7 13 8.7 14 10.7 14c-2.7 2-6 2-8.7 1.7C4 18 7 19 10 19c6 0 10.5-4.8 10.3-10.7 1-.7 1.7-1.7 2.7-3.3z" stroke="currentColor" stroke-width="0.5"/></svg>
+          </a>
+          <a href="#" aria-label="Instagram">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="6" r="1" fill="currentColor"/></svg>
+          </a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Back to top button -->
+    <a href="#home" class="btn back-to-top" aria-label="Back to top">Top</a>
+
+    <!-- Screen reader only utility -->
+    <style>
+      .sr-only { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px !important; overflow: hidden !important; clip: rect(0, 0, 0, 0) !important; white-space: nowrap !important; border: 0 !important; }
+    </style>
+
+    <script>
+      // Utility: set current year
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      // Mobile menu toggle (accessible)
+      (function() {
+        const toggle = document.querySelector('.menu-toggle');
+        const nav = document.getElementById('primary-navigation');
+        if (!toggle || !nav) return;
+        const links = nav.querySelectorAll('a');
+
+        function setExpanded(isOpen) {
+          toggle.setAttribute('aria-expanded', String(isOpen));
+          nav.classList.toggle('open', isOpen);
+          if (isOpen) {
+            // Focus first link for accessibility
+            const first = links[0];
+            first && first.focus({ preventScroll: true });
+          }
+        }
+        toggle.addEventListener('click', () => {
+          const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+          setExpanded(!isOpen);
+        });
+        // Close menu when a link is clicked (mobile)
+        links.forEach(a => a.addEventListener('click', () => setExpanded(false)));
+        // Close on Escape
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') setExpanded(false);
+        });
+      })();
+
+      // Smooth-scroll focus management for skip-like anchor behavior
+      (function() {
+        const navLinks = document.querySelectorAll('a[href^="#"]');
+        navLinks.forEach(link => {
+          link.addEventListener('click', (e) => {
+            const targetId = link.getAttribute('href');
+            if (!targetId || targetId === '#') return;
+            const target = document.querySelector(targetId);
+            if (!target) return;
+            // Allow default hash update, then focus target for accessibility
+            setTimeout(() => {
+              if (target.hasAttribute('tabindex')) {
+                target.focus({ preventScroll: true });
+              }
+            }, 0);
+          });
+        });
+      })();
+
+      // Active link highlight on scroll (IntersectionObserver)
+      (function() {
+        const sections = ['#home', '#about', '#academics', '#admissions', '#contact']
+          .map(id => document.querySelector(id))
+          .filter(Boolean);
+        const navLinks = Array.from(document.querySelectorAll('.nav-link'));
+        if (!('IntersectionObserver' in window) || sections.length === 0) return;
+
+        const byId = new Map(navLinks.map(a => [a.getAttribute('href'), a]));
+        const obs = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            const id = '#' + entry.target.id;
+            const link = byId.get(id);
+            if (!link) return;
+            if (entry.isIntersecting) {
+              navLinks.forEach(l => l.classList.remove('active'));
+              link.classList.add('active');
+              link.setAttribute('aria-current', 'true');
+              navLinks.filter(l => l !== link).forEach(l => l.removeAttribute('aria-current'));
+            }
+          });
+        }, { rootMargin: '-50% 0px -40% 0px', threshold: 0.01 });
+
+        sections.forEach(sec => obs.observe(sec));
+      })();
+
+      // Back to top button show/hide
+      (function() {
+        const btn = document.querySelector('.back-to-top');
+        if (!btn) return;
+        const toggle = () => {
+          if (window.scrollY > 400) btn.classList.add('show'); else btn.classList.remove('show');
+        };
+        toggle();
+        window.addEventListener('scroll', toggle, { passive: true });
+      })();
+
+      // FAQ Accordion behavior
+      (function() {
+        const headers = document.querySelectorAll('.accordion-header');
+        headers.forEach((hdr) => {
+          const panelId = hdr.getAttribute('aria-controls');
+          const panel = panelId && document.getElementById(panelId);
+          if (!panel) return;
+          hdr.addEventListener('click', () => {
+            const expanded = hdr.getAttribute('aria-expanded') === 'true';
+            hdr.setAttribute('aria-expanded', String(!expanded));
+            panel.hidden = expanded;
+          });
+          // Keyboard support via button element suffices (Space/Enter handled by browser)
+        });
+      })();
+    </script>
+  </body>
+</html>
+
+
