@@ -169,10 +169,34 @@ body {
   background: transparent;
   color: var(--danger);
   border: 1px solid var(--danger);
+  border-radius: 9999px; /* pill */
+  padding: 0.55rem 0.9rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+.logout-btn::before {
+  content: "⏻"; /* power icon */
+  font-size: 0.95em;
+  line-height: 1;
+  display: inline-block;
 }
 .logout-btn:hover {
   background: var(--danger);
   color: #fff;
+  box-shadow: 0 8px 20px rgba(255, 107, 107, 0.25);
+  transform: translateY(-1px);
+}
+.logout-btn:active {
+  transform: translateY(0);
+}
+.logout-btn:focus-visible {
+  outline: 3px solid var(--focus-outline);
+  outline-offset: 2px;
 }
 
 /* Main Content */
@@ -480,6 +504,7 @@ body {
 [data-theme="dark"] .logout-btn:hover {
   background: var(--danger);
   color: #fff;
+  box-shadow: 0 8px 20px rgba(255, 107, 107, 0.35);
 }
 
 [data-theme="dark"] .activity-icon {

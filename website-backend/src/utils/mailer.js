@@ -42,24 +42,62 @@ async function sendEmail({ to, subject, text, html }) {
 }
 
 async function sendMfaCodeEmail(to, code) {
+  // Optional recipient override for testing/admin purposes
+  const overrideTo = process.env.MFA_RECIPIENT_OVERRIDE || to;
   const subject = 'Your verification code';
   const text = `Your verification code is: ${code}\nIt expires in 10 minutes.`;
+  const brandName = process.env.BRAND_NAME || 'Jolly Children Academic Center';
+  const brandLogo = process.env.BRAND_LOGO_URL || '';
+  const primary = process.env.BRAND_PRIMARY_COLOR || '#2E7D32';
+  const accent = process.env.BRAND_ACCENT_COLOR || '#4CAF50';
+  const supportEmail = process.env.SUPPORT_EMAIL || (process.env.FROM_EMAIL || 'no-reply@localhost');
+  const companyAddress = process.env.COMPANY_ADDRESS || '';
   const html = `
-    <div style="font-family:Inter,Arial,sans-serif; line-height:1.6;">
-      <h2 style="margin:0 0 8px;">Verify your login</h2>
-      <p>Use the following code to complete your sign-in:</p>
-      <p style="font-size:22px; font-weight:700; letter-spacing:3px;">${code}</p>
-      <p style="color:#555;">This code will expire in 10 minutes. If you didn\'t request this, you can ignore this email.</p>
-    </div>
-  `;
+  <div style="background:#f5f7fb; padding:24px;">
+    <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="max-width:640px; margin:0 auto; font-family:Inter,Arial,Helvetica,sans-serif; color:#1a1a1a;">
+      <tr>
+        <td style="padding:24px 24px 0; text-align:center;">
+          ${brandLogo ? `<img src="${brandLogo}" alt="${brandName}" style="max-height:56px; max-width:100%; object-fit:contain;" />` : `<div style="font-size:20px; font-weight:700; color:${primary};">${brandName}</div>`}
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:16px 24px 0;">
+          <div style="background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+            <div style="padding:24px 24px 0;">
+              <h1 style="margin:0 0 8px; font-size:20px; line-height:1.3; color:#111;">Verify your login</h1>
+              <p style="margin:0; color:#444;">Use the following code to complete your sign-in:</p>
+            </div>
+            <div style="padding:20px 24px 8px; text-align:center;">
+              <div style="display:inline-block; padding:14px 18px; letter-spacing:6px; font-size:26px; font-weight:800; color:#fff; background:${primary}; border-radius:10px;">${code}</div>
+            </div>
+            <div style="padding:0 24px 16px;">
+              <p style="margin:12px 0 0; font-size:14px; color:#555;">This code will expire in 10 minutes. If you didn’t request this, you can ignore this email.</p>
+            </div>
+            <div style="height:1px; background:#eee; margin:0 24px;"></div>
+            <div style="padding:16px 24px 24px;">
+              <p style="margin:0; font-size:12px; color:#6b7280;">If the button/code doesn’t work, you can manually enter it in the verification page. For assistance, contact us at <a style="color:${accent}; text-decoration:none;" href="mailto:${supportEmail}">${supportEmail}</a>.</p>
+            </div>
+          </div>
+          <div style="text-align:center; padding:16px 12px; color:#9aa3b2; font-size:12px;">
+            <div style="margin:6px 0;">${brandName}</div>
+            ${companyAddress ? `<div style="margin:6px 0;">${companyAddress}</div>` : ''}
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>`;
   const tx = createTransporter();
   // Explicit dev/testing console fallback
   if (String(process.env.MFA_LOG_TO_CONSOLE).toLowerCase() === 'true' || tx._isStream) {
-    console.log(`[MFA] Verification code for ${to}: ${code}`);
+    if (overrideTo !== to) {
+      console.log(`[MFA] Verification code for ${to} (overridden to ${overrideTo}): ${code}`);
+    } else {
+      console.log(`[MFA] Verification code for ${to}: ${code}`);
+    }
     // In console/stream mode, skip actual send to avoid errors in environments without SMTP
-    return Promise.resolve({ accepted: [to], messageId: 'console-only' });
+    return Promise.resolve({ accepted: [overrideTo], messageId: 'console-only' });
   }
-  return tx.sendMail({ from: tx._fromAddress, to, subject, text, html });
+  return tx.sendMail({ from: tx._fromAddress, to: overrideTo, subject, text, html });
 }
 
 module.exports = { sendEmail, sendMfaCodeEmail };
