@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Testimonials Management - Admin Dashboard</title>
+  <link rel="stylesheet" href="/css/admin-dashboard.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <script>(function(){try{const s=localStorage.getItem('admin-theme');const sys=window.matchMedia('(prefers-color-scheme: dark)').matches;const t=s||(sys?'dark':'light');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();</script>
+  <style>
+    /* Layout containers */
+    .testimonials-container { display:grid; grid-template-columns:1fr 1fr; gap:28px; align-items:start; }
+    @media (max-width:1000px){ .testimonials-container{ grid-template-columns:1fr; } }
+    .testimonial-form-section, .testimonials-list-section { background:var(--surface); border:1px solid var(--border-color); border-radius:16px; padding:26px 30px; box-shadow:var(--shadow); position:relative; }
+    .section-title { margin:0 0 18px; font-size:20px; font-weight:600; color:var(--primary-dark); }
+    /* Cards */
+    .testimonials-list { display:flex; flex-direction:column; gap:18px; }
+    .testimonial-card { background:var(--surface); border-radius:12px; box-shadow:var(--shadow); padding:20px; position:relative; border:1px solid var(--border-color); transition:box-shadow .3s ease, transform .3s ease, border-color .3s ease; }
+    .testimonial-card:hover { box-shadow:0 8px 15px rgba(0,0,0,0.18); transform:translateY(-2px); }
+    .testimonial-card.featured { border-color:var(--primary); background:linear-gradient(0deg, rgba(76,175,80,0.06), rgba(76,175,80,0.06)), var(--surface); }
+    [data-theme="dark"] .testimonial-card.featured { background:linear-gradient(0deg, rgba(124,179,66,0.12), rgba(124,179,66,0.12)), var(--surface); }
+    .testimonial-header { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+    .testimonial-name { font-size:16px; font-weight:600; color:var(--text); }
+    .testimonial-role { font-size:13px; color:var(--muted); }
+    .testimonial-content { font-size:14px; line-height:1.55; color:var(--text); margin:6px 0 14px; }
+    .testimonial-date { font-size:12px; color:var(--muted); }
+    .testimonial-rating { display:flex; gap:2px; margin-left:auto; }
+    .star { font-size:18px; color:#ddd; cursor:pointer; transition:color .25s; }
+    .star.selected { color:#ffc107; }
+    [data-theme="dark"] .star { color:#555; }
+    [data-theme="dark"] .star.selected { color:#ffc84a; }
+    .testimonial-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; }
+    /* Buttons */
+    .btn { padding:8px 16px; border:none; border-radius:6px; font-size:14px; font-weight:500; cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:background .3s, color .3s, box-shadow .3s; }
+    .btn-edit { background:var(--primary); color:#fff; }
+    .btn-edit:hover { background:var(--primary-dark); }
+    .btn-delete { background:#dc3545; color:#fff; }
+    .btn-delete:hover { background:#b72a38; }
+    [data-theme="dark"] .btn-delete { background:#b72a38; }
+    [data-theme="dark"] .btn-delete:hover { background:#9c2330; }
+    .btn-toggle { background:#ff9800; color:#fff; }
+    .btn-toggle:hover { background:#f57c00; }
+    .btn-toggle.active { background:var(--primary); }
+    .submit-btn { background:var(--primary); color:#fff; padding:14px 28px; border:none; border-radius:8px; font-size:16px; font-weight:600; cursor:pointer; transition:background .3s ease, transform .2s ease; grid-column:1 / -1; }
+    .submit-btn:hover { background:var(--primary-dark); }
+    .submit-btn:active { transform:scale(.97); }
+    /* Form */
+    .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    @media (max-width:640px){ .form-grid{ grid-template-columns:1fr; } }
+    .form-group { display:flex; flex-direction:column; gap:6px; }
+    .form-group label { font-weight:600; font-size:14px; color:var(--text); }
+    .form-group input, .form-group textarea, .form-group select { padding:12px; border:1px solid var(--border-color); border-radius:8px; font-size:14px; background:var(--surface); color:var(--text); transition:border-color .25s, box-shadow .25s, background .25s; }
+    .form-group textarea { resize:vertical; min-height:110px; line-height:1.5; }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(76,175,80,0.25); }
+    [data-theme="dark"] .form-group input:focus, [data-theme="dark"] .form-group textarea:focus, [data-theme="dark"] .form-group select:focus { box-shadow:0 0 0 3px rgba(124,179,66,0.30); }
+    .rating-input { display:flex; gap:8px; align-items:center; }
+    /* Badges & status */
+    .status-badge { display:inline-flex; align-items:center; gap:6px; background:var(--gradient-soft-start); color:var(--primary-dark); padding:6px 10px; border-radius:999px; font-size:12px; font-weight:500; border:1px solid var(--border-color); }
+    [data-theme="dark"] .status-badge { background:#243326; color:var(--primary-light); }
+    .error-message, .success-message { padding:12px; border-radius:8px; margin-bottom:20px; display:flex; align-items:center; gap:8px; font-size:14px; border-left:4px solid; }
+    .error-message { background:#ffebee; color:#c62828; border-left-color:#f44336; }
+    .success-message { background:#e8f5e9; color:var(--primary-dark); border-left-color:var(--primary); }
+    [data-theme="dark"] .error-message { background:#3a1e1e; color:#ffb9b9; border-left-color:#ff6b6b; }
+    [data-theme="dark"] .success-message { background:#1d3321; color:var(--primary-light); border-left-color:var(--primary-light); }
+    /* Modal */
+    .modal-overlay { position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:1100; background:rgba(0,0,0,0.45); }
+    .modal-box { background:var(--surface); border-radius:12px; max-width:420px; width:100%; padding:24px; box-shadow:0 10px 30px -5px rgba(0,0,0,0.4); border:1px solid var(--border-color); }
+    .modal-actions { display:flex; justify-content:flex-end; gap:12px; margin-top:22px; }
+    .btn-cancel { background:#e5e7eb; border:1px solid #d1d5db; color:#374151; padding:8px 16px; border-radius:6px; cursor:pointer; font-weight:500; }
+    .btn-cancel:hover { background:#d8dadf; }
+    [data-theme="dark"] .btn-cancel { background:#2d3a2e; color:var(--text); border:1px solid var(--border-color); }
+    [data-theme="dark"] .btn-cancel:hover { background:#364738; }
+    .btn-danger { background:#dc2626; border:1px solid #b91c1c; color:#fff; padding:8px 16px; border-radius:6px; cursor:pointer; font-weight:600; }
+    .btn-danger:hover { background:#b91c1c; }
+    [data-theme="dark"] .btn-danger { background:#b91c1c; border-color:#8f1515; }
+    [data-theme="dark"] .btn-danger:hover { background:#991212; }
+    /* Utility */
+    .notify { position:fixed; right:20px; bottom:20px; z-index:1200; min-width:220px; }
+    .notify .msg { background:var(--primary-dark); color:#fff; padding:10px 14px; border-radius:8px; box-shadow:0 6px 18px rgba(0,0,0,0.5); font-size:14px; }
+    [data-theme="dark"] .notify .msg { background:var(--primary); }
+    @media (max-width:700px){ .testimonials-container{ grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+<body>
+  <!-- Admin Header -->
+  <header class="admin-header">
+    <nav class="admin-nav">
+      <div class="admin-brand">
+        <div class="logo-wrapper">
+          <img src="/images/brand-logo.png" alt="Site Logo" class="admin-logo" loading="lazy" />
+        </div>
+        <h1>Admin Portal</h1>
+      </div>
+      <div class="admin-nav-links">
+        <button type="button" id="themeToggle" class="theme-toggle" aria-pressed="false" style="margin-right:.5rem;">
+          <span class="toggle-label-light">🌞</span>
+          <span class="toggle-label-dark" style="display:none;">🌙</span>
+          <span class="sr-only">Toggle theme</span>
+        </button>
+        <a href="/admin">Dashboard</a>
+        <a href="/admin/facilities">Facilities</a>
+        <a href="/admin/testimonials" aria-current="true">Testimonials</a>
+        <a href="/admin/settings">Settings</a>
+        <form action="/admin/logout" method="POST" style="display:inline;">
+          <button type="submit" class="logout-btn">Logout</button>
+        </form>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+    <div class="admin-hero">
+      <h2>Testimonials Management</h2>
+      <p>Manage client testimonials and reviews for the website</p>
+    </div>
+
+    <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+      <div class="error-message">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle; margin-right: 8px;">
+          <circle cx="12" cy="12" r="10" stroke="#f44336" stroke-width="2"/>
+          <line x1="12" y1="8" x2="12" y2="12" stroke="#f44336" stroke-width="2"/>
+          <line x1="12" y1="16" x2="12.01" y2="16" stroke="#f44336" stroke-width="2"/>
+        </svg>
+        <%= errorMessage %>
+      </div>
+    <% } %>
+
+    <% if (typeof successMessage !== 'undefined' && successMessage) { %>
+      <div class="success-message">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle; margin-right: 8px;">
+          <circle cx="12" cy="12" r="10" stroke="#4caf50" stroke-width="2"/>
+          <path d="M9 12l2 2 4-4" stroke="#4caf50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <%= successMessage %>
+      </div>
+    <% } %>
+
+    <div class="testimonials-container">
+      <!-- Add New Testimonial Form -->
+      <div class="testimonial-form-section">
+        <h3 class="section-title">Add New Testimonial</h3>
+        <form action="/admin/testimonials/add" method="POST" class="testimonial-form">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="clientName">Client Name</label>
+              <input type="text" id="clientName" name="clientName" required placeholder="e.g., John Smith">
+            </div>
+
+            <div class="form-group">
+              <label for="clientRole">Role/Relation</label>
+              <select id="clientRole" name="clientRole" required>
+                <option value="">Select role</option>
+                <option value="Student">Student</option>
+                <option value="Teacher">Teacher</option>
+                <option value="Parent">Parent</option>
+                <option value="Guardian">Guardian</option>
+                <option value="Staff">Staff</option>
+                <option value="Visitor">Visitor</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="testimonialContent">Testimonial Content</label>
+            <textarea id="testimonialContent" name="testimonialContent" required placeholder="Share your experience with Jolly Children Academic Center..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Rating</label>
+            <div class="rating-input">
+              <div class="star-rating" id="starRating">
+                <span class="star" data-rating="1">★</span>
+                <span class="star" data-rating="2">★</span>
+                <span class="star" data-rating="3">★</span>
+                <span class="star" data-rating="4">★</span>
+                <span class="star" data-rating="5">★</span>
+              </div>
+              <input type="hidden" id="rating" name="rating" value="5" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="isFeatured">
+              <input type="checkbox" id="isFeatured" name="isFeatured" value="true">
+              Feature this testimonial on the homepage
+            </label>
+          </div>
+
+          <button type="submit" class="submit-btn">Add Testimonial</button>
+        </form>
+      </div>
+
+      <!-- Existing Testimonials -->
+      <div class="testimonials-list-section">
+        <h3 class="section-title">Existing Testimonials</h3>
+        <div class="testimonials-list">
+          <% if (typeof testimonials !== 'undefined' && testimonials.length > 0) { %>
+            <% testimonials.forEach(testimonial => { %>
+              <div id="testimonial-<%= testimonial.id %>" class="testimonial-card <%= testimonial.isFeatured ? 'featured' : '' %>">
+                <div class="testimonial-header">
+                  <div>
+                    <div class="testimonial-name"><%= testimonial.clientName %></div>
+                    <div class="testimonial-role"><%= testimonial.clientRole %></div>
+                  </div>
+                  <div class="testimonial-rating">
+                    <% for (let i = 1; i <= 5; i++) { %>
+                      <% const filled = (i <= (testimonial.rating || 0)); %>
+                      <span class="star <%= filled ? 'selected' : '' %>">&#9733;</span>
+                    <% } %>
+                  </div>
+                </div>
+                <div class="testimonial-content"><%= testimonial.content %></div>
+                <div class="testimonial-date">Added: <%= new Date(testimonial.createdAt).toLocaleDateString() %></div>
+                <div class="testimonial-actions">
+                  <button class="btn btn-edit" onclick="editTestimonial('<%= testimonial.id %>')">Edit</button>
+                  <button class="btn btn-toggle <%= testimonial.isFeatured ? 'active' : '' %>"
+                          data-action="feature"
+                          data-id="<%= testimonial.id %>"
+                          data-label-default="<%= testimonial.isFeatured ? 'Unfeature' : 'Feature' %>"
+                          data-confirm-title="<%= testimonial.isFeatured ? 'Unfeature Testimonial' : 'Feature Testimonial' %>"
+                          data-confirm-message="Are you sure you want to <%= testimonial.isFeatured ? 'remove this testimonial from' : 'feature this testimonial on' %> the homepage?"
+                          data-endpoint="/admin/testimonials/<%= testimonial.id %>/toggle">
+                    <%= testimonial.isFeatured ? 'Unfeature' : 'Feature' %>
+                  </button>
+                  <button class="btn btn-delete"
+                          data-action="delete"
+                          data-id="<%= testimonial.id %>"
+                          data-label-default="Delete"
+                          data-confirm-title="Delete Testimonial"
+                          data-confirm-message="This action cannot be undone. Delete this testimonial?"
+                          data-endpoint="/admin/testimonials/<%= testimonial.id %>/delete">
+                    Delete
+                  </button>
+                </div>
+              </div>
+            <% }) %>
+          <% } else { %>
+            <p style="text-align: center; color: #666; padding: 40px;">
+              No testimonials yet. Add your first testimonial using the form!
+            </p>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Star rating functionality
+    const stars = document.querySelectorAll('.star');
+    const ratingInput = document.getElementById('rating');
+
+    stars.forEach(star => {
+      star.addEventListener('click', function() {
+        const rating = parseInt(this.dataset.rating);
+
+        // Update visual selection
+        stars.forEach(s => {
+          s.classList.toggle('selected', parseInt(s.dataset.rating) <= rating);
+        });
+
+        // Update hidden input
+        ratingInput.value = rating;
+      });
+    });
+
+    // Inline edit: replace card content with a form that posts to the existing server endpoint
+    function editTestimonial(testimonialId) {
+      if (!testimonialId) return;
+      const card = document.getElementById('testimonial-' + testimonialId);
+      if (!card) return alert('Could not find testimonial card');
+
+      if (card.dataset.editing === 'true') return;
+      card.dataset.editing = 'true';
+
+      const name = card.querySelector('.testimonial-name')?.innerText.trim() || '';
+      const role = card.querySelector('.testimonial-role')?.innerText.trim() || '';
+      const content = card.querySelector('.testimonial-content')?.innerText.trim() || '';
+      const starElems = card.querySelectorAll('.testimonial-rating .star');
+      let rating = 5;
+      if (starElems && starElems.length) {
+        rating = Array.from(starElems).reduce((acc, s) => acc + (s.classList.contains('selected') ? 1 : 0), 0) || 0;
+      }
+      const isFeatured = card.classList.contains('featured');
+
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = '/admin/testimonials/' + encodeURIComponent(testimonialId) + '/edit';
+
+      function escapeHtml(str) {
+        if (typeof str !== 'string') return '';
+        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      }
+
+      // Predefined role options
+      const predefinedRoles = ['Student','Teacher','Parent','Guardian','Staff','Visitor'];
+      let roleOptions = '<option value="">Select role</option>';
+      predefinedRoles.forEach(r => {
+        const sel = (r.toLowerCase() === role.toLowerCase()) ? ' selected' : '';
+        roleOptions += `<option value="${escapeHtml(r)}"${sel}>${escapeHtml(r)}</option>`;
+      });
+      if (role && !predefinedRoles.some(r => r.toLowerCase() === role.toLowerCase())) {
+        // Include existing non-standard role at top
+        roleOptions = `<option value="${escapeHtml(role)}" selected>${escapeHtml(role)} (Other)</option>` + roleOptions;
+      }
+
+      form.innerHTML = `
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <input name="clientName" value="${escapeHtml(name)}" required style="padding:8px;border:1px solid #ddd;border-radius:6px;">
+          <select name="clientRole" required style="padding:8px;border:1px solid #ddd;border-radius:6px;">${roleOptions}</select>
+          <textarea name="testimonialContent" required style="padding:8px;border:1px solid #ddd;border-radius:6px;min-height:80px;">${escapeHtml(content)}</textarea>
+          <input type="number" name="rating" min="1" max="5" value="${rating || 5}" style="width:80px;padding:8px;border:1px solid #ddd;border-radius:6px;">
+          <label style="font-size:14px;"><input type="checkbox" name="isFeatured" value="true" ${isFeatured ? 'checked' : ''}> Feature on homepage</label>
+          <div style="display:flex;gap:8px;margin-top:8px;"><button type="submit" class="btn btn-edit">Save</button><button type="button" class="btn btn-delete" id="cancel-edit-${testimonialId}">Cancel</button></div>
+        </div>
+      `;
+
+      setTimeout(() => {
+        const btn = document.getElementById('cancel-edit-' + testimonialId);
+        if (btn) btn.addEventListener('click', () => { window.location.reload(); });
+      }, 50);
+
+      card.innerHTML = '';
+      card.appendChild(form);
+    }
+
+    // Modal confirmation system
+    const modalHtml = `
+      <div id="confirmModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" aria-describedby="confirmMessage">
+        <div class="modal-box">
+          <h3 id="confirmTitle" style="margin-top:0;font-size:18px;font-weight:600;">Confirm Action</h3>
+          <p id="confirmMessage" style="font-size:14px;line-height:1.5;">Are you sure?</p>
+          <div class="modal-actions">
+            <button type="button" id="confirmCancel" class="btn btn-cancel">Cancel</button>
+            <button type="button" id="confirmProceed" class="btn btn-danger">Proceed</button>
+          </div>
+        </div>
+      </div>`;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+    const confirmModal = document.getElementById('confirmModal');
+    const confirmTitle = document.getElementById('confirmTitle');
+    const confirmMessage = document.getElementById('confirmMessage');
+    const confirmCancel = document.getElementById('confirmCancel');
+    const confirmProceed = document.getElementById('confirmProceed');
+    let pendingAction = null;
+
+    function openConfirm({title, message, proceedLabel = 'Proceed', proceedVariant = 'danger', onConfirm}) {
+      confirmTitle.textContent = title || 'Confirm Action';
+      confirmMessage.textContent = message || 'Are you sure?';
+      confirmProceed.textContent = proceedLabel;
+      // Variant styling
+      confirmProceed.classList.remove('btn-danger');
+      if (proceedVariant === 'neutral') {
+        confirmProceed.style.background = 'var(--primary)';
+        confirmProceed.style.borderColor = 'var(--primary-dark)';
+      } else if (proceedVariant === 'warning') {
+        confirmProceed.style.background = '#d97706';
+        confirmProceed.style.borderColor = '#b45309';
+      } else { // danger default style already via btn-danger
+        confirmProceed.classList.add('btn-danger');
+        confirmProceed.style.background = '';
+        confirmProceed.style.borderColor = '';
+      }
+      pendingAction = onConfirm;
+      confirmModal.style.display = 'flex';
+      setTimeout(()=>{confirmDialogFocus();},30);
+    }
+
+    function closeConfirm() {
+      confirmModal.style.display = 'none';
+      pendingAction = null;
+    }
+
+    function confirmDialogFocus() {
+      confirmProceed.focus();
+    }
+
+    confirmCancel.addEventListener('click', closeConfirm);
+    confirmModal.addEventListener('click', (e)=>{ if (e.target === confirmModal) closeConfirm(); });
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && confirmModal.style.display==='flex') closeConfirm(); });
+    confirmProceed.addEventListener('click', async () => {
+      if (typeof pendingAction === 'function') {
+        const act = pendingAction;
+        pendingAction = null;
+        await act();
+      }
+      closeConfirm();
+    });
+
+    async function postAndReload(endpoint) {
+      try {
+        const res = await fetch(endpoint, { method: 'POST', headers: { 'Accept': 'text/html' } });
+        if (res.ok) {
+          window.location.reload();
+        } else {
+          const txt = await res.text();
+          alert('Action failed: ' + (txt || res.statusText));
+        }
+      } catch (err) {
+        console.error('Action error:', err);
+        alert('Request failed');
+      }
+    }
+
+    // Delegate button clicks
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-action]');
+      if (!btn) return;
+      const action = btn.dataset.action;
+      const endpoint = btn.dataset.endpoint;
+      const labelDefault = btn.dataset.labelDefault || 'Proceed';
+      const confirmTitleText = btn.dataset.confirmTitle || 'Confirm Action';
+      const confirmMessageText = btn.dataset.confirmMessage || 'Are you sure?';
+      if (!endpoint) return;
+
+      let variant = 'danger';
+      if (action === 'feature') variant = 'neutral';
+      if (action === 'delete') variant = 'danger';
+
+      openConfirm({
+        title: confirmTitleText,
+        message: confirmMessageText,
+        proceedLabel: labelDefault,
+        proceedVariant: variant,
+        onConfirm: () => postAndReload(endpoint)
+      });
+    });
+  </script>
+  <script>
+   (function(){
+     const btn=document.getElementById('themeToggle'); if(!btn) return; const root=document.documentElement;
+     function getTheme(){return root.getAttribute('data-theme')==='dark'?'dark':'light';}
+     function applyLabel(th){const dark=th==='dark';btn.setAttribute('aria-pressed',dark.toString());const l=btn.querySelector('.toggle-label-light');const d=btn.querySelector('.toggle-label-dark');if(l&&d){l.style.display=dark?'none':'inline';d.style.display=dark?'inline':'none';}}
+     applyLabel(getTheme());
+     btn.addEventListener('click',()=>{const c=getTheme();const n=c==='dark'?'light':'dark'; if(n==='dark')root.setAttribute('data-theme','dark'); else root.removeAttribute('data-theme'); try{localStorage.setItem('admin-theme',n);}catch(e){} applyLabel(n);});
+   })();
+  </script>
+</body>
+</html>

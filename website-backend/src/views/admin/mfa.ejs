@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MFA Verification - Jolly Children Academic Center</title>
+  <link rel="stylesheet" href="/css/admin-login.css">
+  <script>
+    (function(){
+      try{
+        const stored = localStorage.getItem('admin-theme');
+        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = stored || (systemDark ? 'dark' : 'light');
+        if(theme==='dark') document.documentElement.setAttribute('data-theme','dark');
+      }catch(e){}
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="login-container">
+    <button type="button" id="themeToggle" class="theme-toggle" aria-pressed="false" style="position:absolute;top:10px;right:10px;">
+      <span class="toggle-label-light">🌞</span>
+      <span class="toggle-label-dark" style="display:none;">🌙</span>
+      <span class="sr-only">Toggle theme</span>
+    </button>
+
+    <div class="brand-section">
+      <div class="logo-wrapper" style="display:flex;align-items:center;justify-content:center;">
+        <img src="/images/brand-logo.png" alt="Jolly Children Academic Center Logo" class="admin-logo" loading="lazy">
+      </div>
+      <h1 style="margin-top:0.75rem;">Enter verification code</h1>
+      <p class="brand-subtitle">We sent a 6-digit code to your email.</p>
+    </div>
+
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div class="error-message" role="alert"><%= error %></div>
+    <% } %>
+
+    <form action="/admin/mfa" method="POST" class="login-form" autocomplete="off">
+      <input type="hidden" name="csrfToken" value="<%= csrfToken %>">
+      <div class="form-group">
+        <label for="code">Verification Code</label>
+        <input id="code" name="code" inputmode="numeric" pattern="[0-9]{6}" minlength="6" maxlength="6" placeholder="123456" required>
+      </div>
+      <button type="submit" class="login-btn">Verify</button>
+    </form>
+
+    <form action="/admin/mfa/resend" method="POST" style="margin-top:12px; text-align:center;">
+      <input type="hidden" name="csrfToken" value="<%= csrfToken %>">
+      <button type="submit" class="theme-toggle" style="border-radius:8px;">Resend code</button>
+    </form>
+
+    <div class="login-footer">
+      <p>&copy; 2024 Jolly Children Academic Center. All rights reserved.</p>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const btn=document.getElementById('themeToggle');
+      if(!btn) return; const root=document.documentElement;
+      function getTheme(){return root.getAttribute('data-theme')==='dark'?'dark':'light';}
+      function applyLabel(theme){const dark=theme==='dark'; btn.setAttribute('aria-pressed', String(dark)); const l=btn.querySelector('.toggle-label-light'); const d=btn.querySelector('.toggle-label-dark'); if(l&&d){l.style.display=dark?'none':'inline'; d.style.display=dark?'inline':'none';}}
+      applyLabel(getTheme());
+      btn.addEventListener('click',()=>{const next=getTheme()==='dark'?'light':'dark'; if(next==='dark') root.setAttribute('data-theme','dark'); else root.removeAttribute('data-theme'); try{localStorage.setItem('admin-theme',next);}catch(e){} applyLabel(next);});
+    })();
+  </script>
+</body>
+</html>

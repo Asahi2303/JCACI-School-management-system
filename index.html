@@ -27,9 +27,10 @@
     <meta name="twitter:title" content="Jolly Children Academic Center, Inc." />
     <meta name="twitter:description" content="Nurturing bright minds and big hearts across vibrant, inclusive programs." />
     <meta name="twitter:image" content="https://via.placeholder.com/1200x630.png?text=Jolly+Children+Academic+Center" />
+  <meta name="color-scheme" content="light dark" />
 
     <!-- Favicon placeholder -->
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" href="/favicon.ico" /> 
 
     <!-- Google Fonts: Poppins (headings) and Inter (body) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -39,6 +40,38 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+
+    <div id="fb-root"></div>
+    <!-- Facebook SDK: load only if a real app id is provided. If not, use the iframe fallback. -->
+    <meta name="facebook-app-id" content="APP_ID">
+    <script>
+      (function() {
+        try {
+          var appId = document.querySelector('meta[name="facebook-app-id"]').getAttribute('content') || '';
+          // If placeholder or empty, do not load SDK and rely on iframe fallback.
+          if (!appId || appId === 'APP_ID' || appId.trim() === '') {
+            console.info('Facebook appId missing or placeholder — using iframe fallback.');
+            // Reveal iframe fallback immediately (if present)
+            window.addEventListener('load', function () {
+              var iframeWrap = document.querySelector('.fb-page-iframe-wrapper');
+              if (iframeWrap) {
+                iframeWrap.style.display = 'block';
+                iframeWrap.setAttribute('aria-hidden', 'false');
+              }
+            });
+            return;
+          }
+          // Otherwise dynamically insert FB SDK with provided appId
+          var s = document.createElement('script');
+          s.async = true; s.defer = true; s.crossOrigin = 'anonymous';
+          s.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v23.0&appId=' + encodeURIComponent(appId);
+          document.head.appendChild(s);
+        } catch (e) {
+          console.warn('Error while configuring Facebook SDK:', e && e.message ? e.message : e);
+        }
+      })();
+    </script>
+
     <!-- Announcement bar (dismissible) -->
     <div class="announce" role="region" aria-label="Announcement" id="announce" hidden>
       <div class="container">
@@ -55,7 +88,7 @@
     <header class="site-header" role="banner">
       <div class="container nav">
         <a class="brand" href="#home">
-          <span class="brand-logo" aria-hidden="true">J</span>
+          <img src="resources\brand logo\images-removebg-preview.png" alt="Jolly Children Academic Center Logo" class="brand-logo">
           <span class="brand-text">Jolly Children Academic Center, Inc.</span>
         </a>
 
@@ -71,8 +104,10 @@
             <a role="menuitem" href="#home" class="nav-link">Home</a>
             <a role="menuitem" href="#about" class="nav-link">About Us</a>
             <a role="menuitem" href="#academics" class="nav-link">Academics</a>
+            <a role="menuitem" href="#facilities" class="nav-link">Facilities</a>
             <a role="menuitem" href="#admissions" class="nav-link">Admissions</a>
             <a role="menuitem" href="#contact" class="nav-link">Contact</a>
+            <button id="theme-toggle" type="button" class="btn secondary" style="margin-left:0.5rem;" aria-pressed="false" aria-label="Activate dark mode">🌙</button>
           </div>
         </nav>
       </div>
@@ -84,7 +119,7 @@
         <div class="container hero-wrap reveal">
           <div>
             <h1 id="hero-title">Jolly Children Academic Center, Inc.</h1>
-            <p class="lead">Nurturing bright minds and big hearts.</p>
+            <p class="lead">LEARNING BY HEART FOR A BRIGHTER START. </p>
             <div class="cta" role="group" aria-label="Primary actions">
               <a class="btn" href="#about">Learn More</a>
               <a class="btn secondary" href="#admissions">Admissions</a>
@@ -93,7 +128,7 @@
           <div class="hero-card" aria-hidden="false">
             <button class="hero-img hero-lightbox-trigger" aria-label="Open hero image">
               <!-- Optional: Replace with an accessible image below -->
-              <!-- <img src="https://via.placeholder.com/800x500.png?text=Welcome+to+Jolly+Children" alt="Students learning together in a bright classroom" /> -->
+              <img src="resources\brand logo\schoolpic.jpg"  /> 
             </button>
           </div>
         </div>
@@ -108,35 +143,8 @@
         <div class="grid">
           <div>
             <p>
-              Our mission is to spark curiosity and character through safe, supportive classrooms where every child belongs. We partner with families to build strong foundations in academics, social‑emotional learning, and community.
+              Our mission is to provide a nurturing and stimulating environment where children can grow academically, socially, and emotionally. We believe in fostering a love for learning that lasts a lifetime.
             </p>
-            <p>
-              Our vision is for every learner to feel seen, challenged, and inspired—ready to thrive in school and in life.
-            </p>
-          </div>
-          <div>
-            <ul class="values" aria-label="Core values">
-              <li>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Curiosity
-              </li>
-              <li>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Compassion
-              </li>
-              <li>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Excellence
-              </li>
-              <li>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Integrity
-              </li>
-              <li>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Community
-              </li>
-            </ul>
           </div>
         </div>
 
@@ -174,19 +182,19 @@
         </div>
         <div class="stats" aria-label="School statistics">
           <div class="stat">
-            <div class="num" data-count="450">0</div>
+            <div class="num" id="stat-total-students" data-count="450">0</div>
             <div class="label">Happy Students</div>
           </div>
           <div class="stat">
-            <div class="num" data-count="48">0</div>
+            <div class="num" id="stat-total-staff" data-count="48">0</div>
             <div class="label">Caring Staff</div>
           </div>
           <div class="stat">
-            <div class="num" data-count="15">0</div>
+            <div class="num" id="stat-total-clubs" data-count="15">0</div>
             <div class="label">Clubs & Teams</div>
           </div>
           <div class="stat">
-            <div class="num" data-count="12">0</div>
+            <div class="num" id="stat-years-of-joy" data-count="12">0</div>
             <div class="label">Years of Joy</div>
           </div>
         </div>
@@ -245,36 +253,38 @@
         </div>
       </section>
 
-      <!-- Testimonials Carousel -->
+      <!-- Facilities -->
+      <section id="facilities" class="container reveal" aria-labelledby="facilities-title">
+        <div class="section-header">
+          <h2 id="facilities-title">Our Facilities</h2>
+          <p class="lead">Modern, safe, and inspiring spaces designed for learning and growth.</p>
+        </div>
+        <div class="grid cols-3" id="facilities-grid">
+          <!-- Facilities will be populated by JavaScript -->
+        </div>
+      </section>
+
+      <!-- Testimonials Carousel (enhanced widget) -->
       <section class="container reveal" aria-labelledby="testimonials-title">
         <div class="section-header">
           <h2 id="testimonials-title">What Families Say</h2>
           <p class="lead">Voices from our community.</p>
         </div>
-        <div class="carousel" aria-roledescription="carousel" aria-label="Testimonials">
-          <div class="carousel-track" id="carousel-track">
-            <figure class="slide" aria-roledescription="slide" aria-label="1 of 3">
-              <blockquote>Our child runs to school every day—teachers truly care.</blockquote>
-              <figcaption>— Parent of Grade 2 student</figcaption>
-            </figure>
-            <figure class="slide" aria-roledescription="slide" aria-label="2 of 3">
-              <blockquote>Engaging lessons and a warm, inclusive community.</blockquote>
-              <figcaption>— Parent of Kinder student</figcaption>
-            </figure>
-            <figure class="slide" aria-roledescription="slide" aria-label="3 of 3">
-              <blockquote>The balance of academics and arts has been wonderful.</blockquote>
-              <figcaption>— Parent of Grade 6 student</figcaption>
-            </figure>
-          </div>
-          <div class="carousel-controls">
-            <button class="carousel-btn" id="prev" aria-label="Previous slide">Prev</button>
-            <div class="dots" role="tablist" aria-label="Slides">
-              <button class="dot" role="tab" aria-controls="slide-1" aria-selected="true"></button>
-              <button class="dot" role="tab" aria-controls="slide-2"></button>
-              <button class="dot" role="tab" aria-controls="slide-3"></button>
+        <div id="testimonials-widget" class="testimonials-widget">
+          <div class="testimonials-card" aria-roledescription="carousel" aria-label="What Families says">
+            <button class="carousel-btn prev" id="testi-prev" aria-label="Previous testimonial">❮</button>
+
+            <div class="testi-viewport">
+              <div class="testi-track" id="testi-track">
+              <!-- slides inserted by enhanced JS -->
+              </div>
             </div>
-            <button class="carousel-btn" id="next" aria-label="Next slide">Next</button>
+
+            <button class="carousel-btn next" id="testi-next" aria-label="Next testimonial">❯</button>
           </div>
+
+          <div class="testi-dots" id="testi-dots" role="tablist" aria-label="Testimonial navigation"></div>
+          <div id="testi-announcer" class="sr-only" aria-live="polite"></div>
         </div>
       </section>
 
@@ -337,40 +347,73 @@
       <!-- Contact -->
       <section id="contact" class="container reveal" aria-labelledby="contact-title">
         <div class="section-header">
-          <h2 id="contact-title">Contact</h2>
-          <p class="lead">We’re here to help—reach out anytime.</p>
+          <h2 id="contact-title">Stay Connected</h2>
+          <p class="lead">Follow our updates, get in touch, or find our location below.</p>
         </div>
+
+      
+        <div class="facebook-plugin-container">
+          <div class="fb-embed-wrapper">
+            <!-- Primary: XFBML-based page plugin (requires FB SDK + valid appId). -->
+            <div class="fb-page" 
+              data-href="https://www.facebook.com/profile.php?id=61561035262591" 
+              data-tabs="timeline" 
+              data-width="500"
+              data-small-header="true" 
+              data-adapt-container-width="true" 
+              data-hide-cover="false" 
+              data-show-facepile="true">
+              <blockquote cite="https://www.facebook.com/profile.php?id=61561035262591" class="fb-xfbml-parse-ignore">
+                <a href="https://www.facebook.com/profile.php?id=61561035262591">Facebook</a>
+              </blockquote>
+            </div>
+
+            <!-- Fallback: iframe-based Page Plugin. This does not require the FB SDK or appId and is reliable across ports/origins. -->
+            <div class="fb-page-iframe-wrapper" aria-hidden="true" style="display:none;">
+              <iframe title="Facebook page" class="fb-page-iframe" src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fprofile.php%3Fid%3D61561035262591&tabs=timeline&width=500&height=400&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=true" loading="lazy" style="border:none;overflow:hidden;width:100%;height:400px;" scrolling="no" frameborder="0" allowTransparency="true" allow="encrypted-media"></iframe>
+            </div>
+          </div>
+        </div>
+
+        <!-- Duplicate 'families' testimonial section removed - enhanced testimonials widget lives in the main Testimonials section above -->
 
         <div class="contact-grid">
           <div class="contact-card">
             <h3>Get in Touch</h3>
             <ul class="contact-list" aria-label="School contact information">
-              <li><strong>Address:</strong> 123 Greenway Lane, Learning City, 00000</li>
-              <li><strong>Phone:</strong> (000) 123‑4567</li>
-              <li><strong>Email:</strong> <span id="school-email">hello@jollychildren.edu</span> <span class="inline-actions"><button type="button" class="copy-btn" data-copy="#school-email">Copy</button></span></li>
+              <li><strong>Address:</strong> Block 33, Lot 45, Phase 1A, Kasiglahan Village, San Jose 1860 Rodriguez, Philippines</li>
+              <li><strong>Phone:</strong> Mrs. Amelia B. Lara - 09610582640</li>
+              <li><strong></strong> Mrs. Jennilyn R. Torres - 09184440180</li>
+              <li><strong>Email:</strong> <span id="school-email">
+lara071970@gmail.com</span> <span class="inline-actions"><button type="button" class="copy-btn" data-copy="#school-email">Copy</button></span></li>
               <li><strong>Office Hours:</strong> Mon–Fri, 8:00 AM – 4:00 PM</li>
             </ul>
-            <iframe class="map" title="Map to Jolly Children Academic Center" loading="lazy" allowfullscreen
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.83543450879!2d144.95373631531853!3d-37.81627974201198!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzfCsDQ5JzAyLjYiUyAxNDTCsDU3JzE0LjQiRQ!5e0!3m2!1sen!2s!4v1614643451234"></iframe>
+            <iframe class="map" title="Map to Jolly Children Academic Center" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" style="border:0;"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3858.4364782813063!2d121.13901967587603!3d14.744422073537748!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397bb30da13167b%3A0x5e53164ff18bfe1f!2sJolly%20Children%20Academic%20Center%2C%20Inc.!5e0!3m2!1sen!2sph!4v1758271627238!5m2!1sen!2sph"></iframe>
           </div>
 
           <div class="contact-card" aria-labelledby="form-title">
-            <h3 id="form-title">Contact Form (Demo)</h3>
-            <form class="form" onsubmit="return false;" aria-describedby="form-note">
+            <h3 id="form-title">Contact Form</h3>
+            <form class="form" id="contact-form" action="/api/contact" method="POST" novalidate aria-describedby="form-note">
+              <!-- Honeypot fields (hidden to users, visible to bots) -->
+              <div style="position:absolute;left:-5000px;top:auto;width:1px;height:1px;overflow:hidden;">
+                <label>Do not fill: <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+                <label>Leave empty: <input type="text" name="phone" tabindex="-1" autocomplete="off"></label>
+              </div>
               <div class="field">
                 <label for="name">Name</label>
-                <input id="name" name="name" type="text" inputmode="text" autocomplete="name" placeholder="Your full name" />
+                <input id="name" name="name" type="text" inputmode="text" autocomplete="name" placeholder="Your full name" required />
               </div>
               <div class="field">
                 <label for="email">Email</label>
-                <input id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" />
+                <input id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" required />
               </div>
               <div class="field">
                 <label for="message">Message</label>
-                <textarea id="message" name="message" placeholder="How can we help?"></textarea>
+                <textarea id="message" name="message" placeholder="How can we help?" minlength="10" required></textarea>
               </div>
-              <button class="btn" type="submit" disabled aria-disabled="true" title="Demo only—no data collected">Send Message</button>
-              <p id="form-note" class="form-note">This is a demo form for display only—no data is collected.</p>
+              <button class="btn" type="submit">Send Message</button>
+              <p id="form-note" class="form-note" role="status" aria-live="polite"></p> <!-- For status messages -->
             </form>
           </div>
         </div>
@@ -386,6 +429,7 @@
             <a href="#home">Home</a>
             <a href="#about">About Us</a>
             <a href="#academics">Academics</a>
+            <a href="#facilities">Facilities</a>
             <a href="#admissions">Admissions</a>
             <a href="#contact">Contact</a>
           </div>
@@ -413,6 +457,7 @@
       <img alt="Preview" src="https://via.placeholder.com/1200x750.png?text=Jolly+Children" />
     </div>
 
+    <script src="script.js"></script>
     <script>
       // Utility: set current year
       document.getElementById('year').textContent = new Date().getFullYear();
@@ -466,7 +511,7 @@
 
       // Active link highlight on scroll (IntersectionObserver)
       (function() {
-        const sections = ['#home', '#about', '#academics', '#admissions', '#contact']
+        const sections = ['#home', '#about', '#academics', '#facilities', '#admissions', '#contact']
           .map(id => document.querySelector(id))
           .filter(Boolean);
         const navLinks = Array.from(document.querySelectorAll('.nav-link'));
@@ -485,7 +530,7 @@
               navLinks.filter(l => l !== link).forEach(l => l.removeAttribute('aria-current'));
             }
           });
-        }, { rootMargin: '-50% 0px -40% 0px', threshold: 0.01 });
+        }, { rootMargin: '-40% 0px -55% 0px', threshold: 0.01 }); // Adjusted rootMargin
 
         sections.forEach(sec => obs.observe(sec));
       })();
@@ -606,7 +651,11 @@
       // Stats count-up when visible
       (function() {
         const nums = document.querySelectorAll('.stat .num');
-        if (!nums.length || !('IntersectionObserver' in window)) return;
+        if (!nums.length || !('IntersectionObserver' in window)) {
+          // Fallback: set numbers immediately if observer unsupported
+          nums.forEach(el => { el.textContent = (parseInt(el.getAttribute('data-count'),10) || 0).toLocaleString(); });
+          return;
+        }
         const io = new IntersectionObserver((entries, obs) => {
           entries.forEach(entry => {
             if (!entry.isIntersecting) return;
@@ -622,6 +671,10 @@
           });
         }, { threshold: 0.2 });
         nums.forEach(n => io.observe(n));
+        // Safety: if for some reason observer doesn't trigger within 500ms, set numbers
+        setTimeout(() => {
+          nums.forEach(el => { if (!el.textContent || el.textContent.trim() === '0') el.textContent = (parseInt(el.getAttribute('data-count'),10) || 0).toLocaleString(); });
+        }, 500);
       })();
 
       // Testimonials carousel
@@ -629,21 +682,31 @@
         const track = document.getElementById('carousel-track');
         const prev = document.getElementById('prev');
         const next = document.getElementById('next');
-        const dots = Array.from(document.querySelectorAll('.dot'));
-        if (!track || !prev || !next || !dots.length) return;
-        let index = 0; const total = dots.length;
+        const slides = Array.from(track.children).filter(slide => !slide.classList.contains('hidden-slide'));
+        const dots = Array.from(document.querySelectorAll('.dots .dot'));
+
+        if (!track || !prev || !next || !dots.length || slides.length !== dots.length) return;
+
+        let index = 0;
+        const total = slides.length;
+
         function update() {
-          track.style.transform = `translateX(${-100 * index}%)`;
+          // Use transform to slide the entire track
+          track.style.transform = `translateX(-${index * 100}%)`;
+
           dots.forEach((d, i) => d.classList.toggle('active', i === index));
           dots.forEach((d, i) => d.setAttribute('aria-selected', String(i === index)));
         }
+
         prev.addEventListener('click', () => { index = (index - 1 + total) % total; update(); });
         next.addEventListener('click', () => { index = (index + 1) % total; update(); });
         dots.forEach((d, i) => d.addEventListener('click', () => { index = i; update(); }));
-        update();
-        let timer = setInterval(() => { index = (index + 1) % total; update(); }, 6000);
+        
+        update(); // Set initial state
+
+        let timer = setInterval(() => { next.click() }, 6000);
         track.addEventListener('mouseenter', () => clearInterval(timer));
-        track.addEventListener('mouseleave', () => { timer = setInterval(() => { index = (index + 1) % total; update(); }, 6000); });
+        track.addEventListener('mouseleave', () => { timer = setInterval(() => { next.click() }, 6000); });
       })();
 
       // Lightbox for hero image
@@ -657,7 +720,228 @@
         lb.addEventListener('click', (e) => { if (e.target === lb) lb.classList.remove('open'); });
         document.addEventListener('keydown', (e) => { if (e.key === 'Escape') lb.classList.remove('open'); });
       })();
+
+      // Contact Form Submission
+      (function() {
+        const form = document.getElementById('contact-form');
+        const formNote = document.getElementById('form-note');
+        if (!form || !formNote) return;
+
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const formData = new FormData(form);
+          const data = Object.fromEntries(formData.entries());
+          const submitButton = form.querySelector('button[type="submit"]');
+
+          submitButton.disabled = true;
+          formNote.textContent = 'Sending...';
+
+          try {
+            const response = await fetch('/api/contact', { // Your future backend endpoint
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(data),
+            });
+
+            if (response.ok) {
+              formNote.textContent = 'Message sent successfully!';
+              form.reset();
+            } else {
+              throw new Error('Something went wrong.');
+            }
+          } catch (error) {
+            formNote.textContent = 'Error: Could not send message.';
+          } finally {
+            submitButton.disabled = false;
+          }
+        });
+      })();
+
+  // FINAL: Responsive Facebook Plugin Fix
+      window.addEventListener('load', function() {
+        function resizeFacebookPlugin() {
+          const container = document.querySelector('.facebook-plugin-container');
+          if (!container) return;
+
+          // The timeout ensures the plugin has rendered once before we try to resize it
+          setTimeout(function() {
+            const fbPage = container.querySelector('.fb-page');
+            if (fbPage) {
+              const containerWidth = container.offsetWidth;
+              fbPage.setAttribute('data-width', containerWidth);
+              if (window.FB) {
+                window.FB.XFBML.parse(container);
+              }
+            }
+          }, 500); // A small delay can help
+        }
+
+        // Resize on initial load
+        resizeFacebookPlugin();
+        // Resize on window resize
+        window.addEventListener('resize', resizeFacebookPlugin);
+        // If the FB SDK is not available (e.g., appId missing or blocked), show iframe fallback
+        setTimeout(function() {
+          if (!window.FB) {
+            const iframeWrap = document.querySelector('.fb-page-iframe-wrapper');
+            const embedWrap = document.querySelector('.fb-embed-wrapper');
+            if (iframeWrap && embedWrap) {
+              iframeWrap.style.display = 'block';
+              iframeWrap.setAttribute('aria-hidden', 'false');
+            }
+          }
+        }, 1200);
+      });
+
     </script>
+
+    <script>
+(async function populateFacilities() {
+  const grid = document.getElementById('facilities-grid');
+  if (!grid) return;
+
+  function escHtml(s) { return String(s || '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function escAttr(s) { return escHtml(s); }
+
+  const placeholder = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">' +
+    '<rect width="100%" height="100%" fill="#e8f5e9"/>' +
+    '<g fill="#a5d6a7"><rect x="90" y="120" width="440" height="280" rx="12"/><rect x="620" y="120" width="440" height="280" rx="12"/></g>' +
+    '<text x="50%" y="62%" text-anchor="middle" fill="#2E7D32" font-family="Inter,Roboto,Arial" font-size="36">No image available</text>' +
+    '</svg>'
+  );
+
+  // Try common public path prefixes for bare filenames
+  const publicPrefixes = ['/uploads/', '/resources/', '/public/uploads/', '/images/'];
+
+  // Resolve image from many possible shapes
+  function resolveImageSrc(item) {
+    if (!item) return null;
+
+    // Helper to pick first valid string url-like value
+    function firstString(values) {
+      for (const v of values) {
+        if (!v && v !== 0) continue;
+        if (typeof v === 'string' && v.trim()) return v.trim();
+      }
+      return null;
+    }
+
+    // If any common direct fields exist
+    const directFields = [
+      'imageUrl','photoUrl','url','path','image','photo',
+      'photoPath','file','filename','fileName','publicUrl','public_url'
+    ];
+    let val = firstString(directFields.map(f => item[f]));
+    if (val) return normalizeSrc(val);
+
+    // If item.image / item.photo is an object with url/path/filename
+    const objCandidates = ['image','photo','file','media'];
+    for (const k of objCandidates) {
+      const v = item[k];
+      if (!v) continue;
+      if (typeof v === 'string' && v.trim()) return normalizeSrc(v.trim());
+      if (Array.isArray(v) && v.length) {
+        // try first element
+        const first = v[0];
+        if (typeof first === 'string') return normalizeSrc(first);
+        if (first && typeof first === 'object') {
+          const nested = firstString([first.url, first.path, first.filename, first.fileName, first.publicUrl, first.public_url]);
+          if (nested) return normalizeSrc(nested);
+        }
+      }
+      if (v && typeof v === 'object') {
+        const nested = firstString([v.url, v.path, v.filename, v.fileName, v.publicUrl, v.public_url]);
+        if (nested) return normalizeSrc(nested);
+      }
+    }
+
+    // If the item has an images/photos array (common)
+    const arrFields = ['images','photos','gallery','files','media'];
+    for (const a of arrFields) {
+      const arr = item[a];
+      if (!Array.isArray(arr) || !arr.length) continue;
+      const first = arr[0];
+      if (typeof first === 'string') return normalizeSrc(first);
+      if (first && typeof first === 'object') {
+        const nested = firstString([first.url, first.path, first.filename, first.fileName, first.publicUrl, first.public_url]);
+        if (nested) return normalizeSrc(nested);
+      }
+    }
+
+    // Last resort: if item has 'id' and a filename field elsewhere, try to form a path
+    if (item.filename && typeof item.filename === 'string') return normalizeSrc(item.filename);
+
+    return null;
+  }
+
+  // Normalize src: if absolute URL return as-is, if looks like "bucket/path" or has no leading slash try known prefixes
+  function normalizeSrc(src) {
+    if (!src) return null;
+    src = String(src);
+    // If already absolute, return
+    if (/^https?:\/\//i.test(src) || src.startsWith('data:')) return src;
+    const origin = window.location && window.location.origin ? window.location.origin : (location.protocol + '//' + location.host);
+    // If starts with a slash, prefix with current origin so port is preserved
+    if (src.startsWith('/')) return encodeURI(origin + src);
+    // If looks like storage path with bucket/object (e.g. "bucket/dir/file.jpg"), try to return as-is (may be resolved by server)
+    if (/^[^\/]+\/.+\.[a-zA-Z]{2,5}$/.test(src)) {
+      // Try with /uploads/ first if file-like (no scheme)
+      for (const p of publicPrefixes) {
+        const candidate = p + src;
+        // leave normalization to caller (no availability check here)
+        return encodeURI(origin + candidate);
+      }
+    }
+    // If it's just a filename, try common public locations
+    if (/^[^\/]+\.[a-zA-Z]{2,5}$/.test(src)) {
+      for (const p of publicPrefixes) {
+        const candidate = p + src;
+        return encodeURI(origin + candidate);
+      }
+    }
+    // otherwise return as relative path
+    return encodeURI(origin + '/' + src.replace(/^\/+/, ''));
+  }
+
+  try {
+    const res = await fetch('/api/facilities', { cache: 'no-store' });
+    if (!res.ok) throw new Error('Failed to fetch facilities (' + res.status + ')');
+    const data = await res.json();
+
+    console.debug('populateFacilities: API returned', data);
+
+    if (!Array.isArray(data) || data.length === 0) {
+      grid.innerHTML = '<p class="muted">No facilities found.</p>';
+      return;
+    }
+
+    const cards = data.map(f => {
+      const src = resolveImageSrc(f);
+      const imgSrc = src || placeholder;
+      const title = f.name || f.title || f.facilityName || 'Facility';
+      const desc = f.description || f.desc || f.summary || '';
+
+      // For debugging: include dataset with chosen src
+      return (
+        '<article class="card" data-id="' + escAttr(f.id || f._id || '') + '" data-src="' + escAttr(src || '') + '">' +
+          '<div class="hero-img" style="aspect-ratio:16/10; overflow:hidden; border-radius:12px;">' +
+            '<img loading="lazy" src="' + escAttr(imgSrc) + '" alt="' + escAttr(title) + '" style="width:100%;height:100%;object-fit:cover;display:block;" ' +
+              'onerror="this.onerror=null;this.src=\'' + placeholder + '\';" />' +
+          '</div>' +
+          '<h3 style="margin-top:0.75rem;">' + escHtml(title) + '</h3>' +
+          (desc ? '<p class="muted">' + escHtml(desc) + '</p>' : '') +
+        '</article>'
+      );
+    });
+
+    grid.innerHTML = cards.join('');
+  } catch (err) {
+    console.warn('populateFacilities error:', err);
+    grid.innerHTML = '<p class="muted">Unable to load facilities at this time.</p>';
+  }
+})();
+</script>
   </body>
 </html>
 

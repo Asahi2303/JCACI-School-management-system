@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Jolly Children Academic Center</title>
+  <link rel="stylesheet" href="/css/admin-dashboard.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <script>
+    (function() {
+      try {
+        const stored = localStorage.getItem('admin-theme');
+        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = stored || (systemDark ? 'dark' : 'light');
+        if (theme === 'dark') {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch(e) { /* ignore */ }
+    })();
+  </script>
+</head>
+<body>
+  <!-- Admin Header -->
+  <header class="admin-header">
+    <nav class="admin-nav">
+      <div class="admin-brand">
+        <div class="logo-wrapper">
+          <img src="/images/brand-logo.png" alt="Site Logo" class="admin-logo" loading="lazy" />
+        </div>
+        <h1>Admin Portal</h1>
+      </div>
+      <div class="admin-nav-links">
+        <button type="button" id="themeToggle" class="theme-toggle" aria-pressed="false" style="margin-right:.5rem;">
+          <span class="toggle-label-light">🌞</span>
+          <span class="toggle-label-dark" style="display:none;">🌙</span>
+          <span class="sr-only">Toggle theme</span>
+        </button>
+        <a href="/admin" aria-current="true">Dashboard</a>
+        <a href="/admin/facilities">Facilities</a>
+        <a href="/admin/testimonials">Testimonials</a>
+        <a href="/admin/settings">Settings</a>
+        <form action="/admin/logout" method="POST" style="display:inline;">
+          <button type="submit" class="logout-btn">Logout</button>
+        </form>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+    <!-- Welcome Section -->
+    <section class="admin-hero">
+      <h2>Welcome back, Admin!</h2>
+      <p>Manage your Jolly Children Academic Center website content and settings from this dashboard.</p>
+    </section>
+
+    <!-- Quick Stats -->
+    <section class="stats-section">
+      <h3>Quick Stats</h3>
+      <div class="stats-grid">
+        <div class="stat-item" title="Facilities stored in the database">
+          <div class="stat-number"><%= stats && stats.totalFacilities %></div>
+          <div class="stat-label">Total Facilities</div>
+        </div>
+        <div class="stat-item" title="Testimonials stored in the database">
+          <div class="stat-number"><%= stats && stats.totalTestimonials %></div>
+          <div class="stat-label">Testimonials</div>
+        </div>
+        <div class="stat-item" title="(Static placeholder)">
+          <div class="stat-number"><%= stats && stats.websiteVisitors %></div>
+          <div class="stat-label">Website Visitors</div>
+        </div>
+        <div class="stat-item" title="(Static placeholder)">
+          <div class="stat-number"><%= stats && stats.contactForms %></div>
+          <div class="stat-label">Contact Forms</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dashboard Actions -->
+    <section>
+      <h3>Quick Actions</h3>
+      <div class="dashboard-grid">
+        <div class="dashboard-card" onclick="location.href='/admin/facilities'">
+          <div class="dashboard-card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 12L5 10M5 10L12 3L19 10M5 10V20C5 20.5523 5.44772 21 6 21H9M19 10L21 12M19 10V20C19 20.5523 18.5523 21 18 21H15M9 21C9.55228 21 10 20.5523 10 20V14C10 13.4477 10.4477 13 11 13H13C13.5523 13 14 13.4477 14 14V20C14 20.5523 14.5523 21 15 21M9 21H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3>Manage Facilities</h3>
+          <p>Add, edit, or remove school facilities and amenities</p>
+        </div>
+
+        <div class="dashboard-card" onclick="location.href='/admin/testimonials'">
+          <div class="dashboard-card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M21 15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7L3 21V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3>Manage Testimonials</h3>
+          <p>Review and moderate parent testimonials and reviews</p>
+        </div>
+
+        <!-- Settings quick action removed -->
+
+        <div class="dashboard-card" onclick="window.open('/', '_blank')" title="Open public site in new tab">
+          <div class="dashboard-card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+              <path d="M14 3H19C19.5523 3 20 3.44772 20 4V9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M10 14L20 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M5 5H9C9.55228 5 10 5.44772 10 6V18C10 18.5523 9.55228 19 9 19H5C4.44772 19 4 18.5523 4 18V6C4 5.44772 4.44772 5 5 5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3>View Site</h3>
+          <p>Open the public website homepage</p>
+        </div>
+
+      </div><!-- end dashboard-grid -->
+    </section>
+  </main>
+  <script>
+    (function(){
+      const btn = document.getElementById('themeToggle');
+      if(!btn) return;
+      const root = document.documentElement;
+      function applyLabel(theme){
+        const dark = theme==='dark';
+        btn.setAttribute('aria-pressed', dark.toString());
+        const lightEl = btn.querySelector('.toggle-label-light');
+        const darkEl = btn.querySelector('.toggle-label-dark');
+        if(lightEl && darkEl){
+          lightEl.style.display = dark ? 'none':'inline';
+          darkEl.style.display = dark ? 'inline':'none';
+        }
+      }
+      function getTheme(){
+        return root.getAttribute('data-theme')==='dark' ? 'dark' : 'light';
+      }
+      applyLabel(getTheme());
+      btn.addEventListener('click', () => {
+        const current = getTheme();
+        const next = current==='dark' ? 'light' : 'dark';
+        if(next==='dark') root.setAttribute('data-theme','dark'); else root.removeAttribute('data-theme');
+        try { localStorage.setItem('admin-theme', next); } catch(e){}
+        applyLabel(next);
+      });
+    })();
+  </script>
+  </body>
+  </html>

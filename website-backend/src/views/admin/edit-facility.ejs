@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Facility - Admin Dashboard</title>
+  <link rel="stylesheet" href="/css/admin-dashboard.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <script>(function(){try{const s=localStorage.getItem('admin-theme');const sys=window.matchMedia('(prefers-color-scheme: dark)').matches;const t=s|| (sys?'dark':'light');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();</script>
+  <style>
+    .edit-section {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+        .edit-facility-container { max-width:800px; margin:30px auto; background:var(--surface); padding:30px; border-radius:16px; box-shadow:var(--shadow); border:1px solid var(--border-color); }
+        .edit-facility-container h1 { font-size:26px; margin:0 0 25px; color:var(--primary-dark); font-weight:600; display:flex; align-items:center; gap:12px; }
+        .form-group { margin-bottom:18px; }
+        .form-group label { display:block; font-weight:600; margin-bottom:6px; font-size:14px; color:var(--text); }
+        .form-group input[type="text"], .form-group textarea, .form-group input[type="file"] { width:100%; padding:12px 14px; border:1px solid var(--border-color); border-radius:8px; font-size:14px; background:var(--surface-alt, #fafafa); transition:border-color .25s, box-shadow .25s, background .25s; font-family:inherit; color:var(--text); }
+        [data-theme="dark"] .form-group input[type="text"], [data-theme="dark"] .form-group textarea, [data-theme="dark"] .form-group input[type="file"] { background:#1f2821; }
+        .form-group input[type="text"]:focus, .form-group textarea:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(46,125,50,.25); }
+        [data-theme="dark"] .form-group input[type="text"]:focus, [data-theme="dark"] .form-group textarea:focus { box-shadow:0 0 0 3px rgba(124,179,66,0.3); }
+        .form-group textarea { min-height:160px; resize:vertical; line-height:1.5; }
+        .helper-text { font-size:12px; color:var(--muted); margin-top:6px; }
+        .image-preview { margin:14px 0; }
+        .image-preview img { max-width:100%; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.18); border:1px solid var(--border-color); }
+        .actions { display:flex; gap:12px; justify-content:flex-end; margin-top:30px; }
+        .btn { padding:12px 22px; border:none; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer; transition:background .3s, box-shadow .3s; display:inline-flex; align-items:center; gap:8px; }
+        .btn-primary { background:var(--primary); color:#fff; }
+        .btn-primary:hover { background:var(--primary-dark); }
+        .btn-secondary { background:#eceff1; color:var(--primary-dark); }
+        .btn-secondary:hover { background:#dfe3e6; }
+        [data-theme="dark"] .btn-secondary { background:#2d3a2e; color:var(--primary-light); }
+        [data-theme="dark"] .btn-secondary:hover { background:#364738; }
+        .status-message { padding:14px 18px; border-radius:10px; margin-bottom:22px; font-size:14px; font-weight:500; display:flex; gap:10px; align-items:center; border:1px solid transparent; }
+        .status-success { background:#e8f5e9; color:var(--primary-dark); border-color:#c8e6c9; }
+        .status-error { background:#ffebee; color:#c62828; border-color:#ef9a9a; }
+        [data-theme="dark"] .status-success { background:#1d3321; color:var(--primary-light); border-color:#31543a; }
+        [data-theme="dark"] .status-error { background:#3a1e1e; color:#ffb9b9; border-color:#6d3a3a; }
+        .back-link { display:inline-flex; align-items:center; gap:8px; text-decoration:none; font-weight:500; color:var(--primary); margin-bottom:10px; }
+        .back-link:hover { text-decoration:underline; }
+        @media (max-width:600px){ .edit-facility-container{ padding:22px; border-radius:14px; } .edit-facility-container h1{ font-size:22px; } .btn{ width:100%; justify-content:center; } .actions{ flex-direction:column; } }
+      display: inline-block;
+    }
+
+    .file-input-button {
+      background: #2E7D32;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+    }
+
+    .file-input-button:hover {
+      background: #1B5E20;
+    }
+
+    .file-input {
+      position: absolute;
+      left: -9999px;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .btn-save {
+      background: #2E7D32;
+      color: white;
+    }
+
+    .btn-save:hover {
+      background: #1B5E20;
+    }
+
+    .btn-cancel {
+      background: #6c757d;
+      color: white;
+    }
+
+    .btn-cancel:hover {
+      background: #545b62;
+    }
+
+    .error-message {
+      background: #ffebee;
+      color: #c62828;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border-left: 4px solid #f44336;
+    }
+
+    .success-message {
+      background: #e8f5e8;
+      color: #2e7d32;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border-left: 4px solid #4caf50;
+    }
+  </style>
+</head>
+<body>
+  <!-- Admin Header -->
+  <header class="admin-header">
+    <nav class="admin-nav">
+      <div class="admin-brand">
+        <div class="logo-wrapper">
+          <img src="/images/brand-logo.png" alt="Site Logo" class="admin-logo" loading="lazy" />
+        </div>
+        <h1>Admin Portal</h1>
+      </div>
+      <div class="admin-nav-links">
+        <button type="button" id="themeToggle" class="theme-toggle" aria-pressed="false" style="margin-right:.5rem;">
+          <span class="toggle-label-light">🌞</span>
+          <span class="toggle-label-dark" style="display:none;">🌙</span>
+          <span class="sr-only">Toggle theme</span>
+        </button>
+        <a href="/admin">Dashboard</a>
+        <a href="/admin/facilities" aria-current="true">Facilities</a>
+        <a href="/admin/testimonials">Testimonials</a>
+        <a href="/admin/settings">Settings</a>
+        <form action="/admin/logout" method="POST" style="display:inline;">
+          <button type="submit" class="logout-btn">Logout</button>
+        </form>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+    <div class="admin-hero">
+      <h2>Edit Facility</h2>
+      <p>Update facility information and image</p>
+    </div>
+
+    <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+      <div class="error-message">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle; margin-right: 8px;">
+          <circle cx="12" cy="12" r="10" stroke="#f44336" stroke-width="2"/>
+          <line x1="12" y1="8" x2="12" y2="12" stroke="#f44336" stroke-width="2"/>
+          <line x1="12" y1="16" x2="12.01" y2="16" stroke="#f44336" stroke-width="2"/>
+        </svg>
+        <%= errorMessage %>
+      </div>
+    <% } %>
+
+    <% if (typeof successMessage !== 'undefined' && successMessage) { %>
+      <div class="success-message">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle; margin-right: 8px;">
+          <circle cx="12" cy="12" r="10" stroke="#4caf50" stroke-width="2"/>
+          <path d="M9 12l2 2 4-4" stroke="#4caf50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <%= successMessage %>
+      </div>
+    <% } %>
+
+    <div class="edit-section">
+      <form action="/admin/facilities/<%= facility.id %>/edit" method="POST" enctype="multipart/form-data" class="edit-form">
+        <input type="hidden" name="currentImageUrl" value="<%= facility.imageUrl %>">
+
+        <div class="form-group">
+          <label for="title">Facility Title</label>
+          <input type="text" id="title" name="title" value="<%= facility.title %>" required>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea id="description" name="description" rows="4" required><%= facility.description %></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Current Image</label>
+          <img src="<%= facility.imageUrl %>" alt="Current facility image" class="current-image">
+        </div>
+
+        <div class="form-group">
+          <label for="image">Upload New Image (optional)</label>
+          <div class="file-input-wrapper">
+            <button type="button" class="file-input-button">Choose New Image</button>
+            <input type="file" id="image" name="image" accept="image/*" class="file-input">
+          </div>
+          <small style="color: #666;">Leave empty to keep current image. Supported formats: JPG, PNG, GIF. Max size: 5MB</small>
+        </div>
+
+        <div class="button-group">
+          <button type="submit" class="btn btn-save">Save Changes</button>
+          <a href="/admin/facilities" class="btn btn-cancel">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    // File input handling
+    document.querySelector('.file-input-button').addEventListener('click', function() {
+      document.getElementById('image').click();
+    });
+
+    document.getElementById('image').addEventListener('change', function(e) {
+      const fileName = e.target.files[0]?.name || 'No file chosen';
+      this.parentElement.querySelector('.file-input-button').textContent = fileName;
+    });
+  </script>
+  <script>
+    (function(){
+      const btn=document.getElementById('themeToggle'); if(!btn) return; const root=document.documentElement;
+      function getTheme(){return root.getAttribute('data-theme')==='dark'?'dark':'light';}
+      function applyLabel(th){const dark=th==='dark';btn.setAttribute('aria-pressed',dark.toString());const l=btn.querySelector('.toggle-label-light');const d=btn.querySelector('.toggle-label-dark');if(l&&d){l.style.display=dark?'none':'inline';d.style.display=dark?'inline':'none';}}
+      applyLabel(getTheme());
+      btn.addEventListener('click',()=>{const c=getTheme();const n=c==='dark'?'light':'dark'; if(n==='dark')root.setAttribute('data-theme','dark'); else root.removeAttribute('data-theme'); try{localStorage.setItem('admin-theme',n);}catch(e){} applyLabel(n);});
+    })();
+  </script>
+</body>
+</html>

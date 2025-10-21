@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login - Jolly Children Academic Center</title>
+  <link rel="stylesheet" href="/css/admin-login.css">
+  <script>
+    (function(){
+      try {
+        const stored = localStorage.getItem('admin-theme');
+        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = stored || (systemDark ? 'dark' : 'light');
+        if(theme==='dark') document.documentElement.setAttribute('data-theme','dark');
+      } catch(e) {}
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <!-- Popup styles (kept local to this view) -->
+  <style>
+    #error-popup { position: fixed; inset: 0; display: grid; place-items: center; background: rgba(0,0,0,0.45); z-index: 12000; padding: 1.25rem; }
+    #error-popup[hidden] { display: none; }
+    .popup-card { width: min(520px, 96%); background: var(--surface, #fff); border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.18); padding: 1rem 1.25rem; color: var(--text, #111); border-left: 6px solid #d32f2f; font-family: "Inter", system-ui, sans-serif; }
+    .popup-header { display:flex; align-items:center; justify-content:space-between; gap:0.75rem; }
+    .popup-title { font-weight:700; color:#b71c1c; margin:0; font-family: "Poppins",system-ui, sans-serif; }
+    .popup-message { margin-top:0.5rem; color:#333; white-space:pre-wrap; }
+    .popup-actions { display:flex; justify-content:flex-end; margin-top:0.75rem; gap:0.5rem; }
+    .popup-close { appearance: none; border: 0; padding: 0.5rem 0.9rem; border-radius: 8px; background: #2E7D32; color: #fff; font-weight: 600; cursor: pointer; }
+    .popup-dismiss { appearance: none; border: 0; padding: 0.45rem 0.8rem; border-radius: 8px; background: #eee; color: #333; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <button type="button" id="themeToggle" class="theme-toggle" aria-pressed="false" style="position:absolute;top:10px;right:10px;background:var(--surface);border:1px solid var(--border-color,#d7e7d6);padding:6px 10px;border-radius:999px;cursor:pointer;font-size:14px;line-height:1;display:flex;align-items:center;gap:4px;">
+      <span class="toggle-label-light">🌞</span>
+      <span class="toggle-label-dark" style="display:none;">🌙</span>
+      <span class="sr-only">Toggle theme</span>
+    </button>
+
+    <div class="brand-section">
+      <div class="logo-wrapper" style="display:flex;align-items:center;justify-content:center;">
+  <img src="/images/brand-logo.png" alt="Jolly Children Academic Center Logo" class="admin-logo" loading="lazy">
+      </div>
+      <h1 style="margin-top:0.75rem;">Admin Portal</h1>
+      <p class="brand-subtitle">Jolly Children Academic Center</p>
+    </div>
+
+    <form action="/admin/login" method="POST" class="login-form" autocomplete="on" novalidate aria-describedby="login-note">
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div class="error-message" role="alert">
+          <%= error %>
+        </div>
+      <% } %>
+
+      <% /* Optional CSRF token (rendered by server if available) */ %>
+      <% if (typeof csrfToken !== 'undefined') { %>
+        <input type="hidden" name="csrfToken" value="<%= csrfToken %>">
+      <% } %>
+
+      <div class="form-group">
+        <label for="email">
+          <!-- small user icon retained -->
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="#2E7D32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="12" cy="7" r="4" stroke="#2E7D32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Email
+        </label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          required
+          placeholder="name@example.com"
+          autocomplete="email"
+          autocapitalize="off"
+          autocorrect="off"
+          spellcheck="false"
+          inputmode="email"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="password">
+          <!-- lock icon retained -->
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="#2E7D32" stroke-width="2"/>
+            <circle cx="12" cy="16" r="1" fill="#2E7D32"/>
+            <path d="M7 11V7C7 5.93913 7.42143 4.92172 8.17157 4.17157C8.92172 3.42143 9.93913 3 11 3H13C14.0609 3 15.0783 3.42143 15.8284 4.17157C16.5786 4.92172 17 5.93913 17 7V11" stroke="#2E7D32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Password
+        </label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          required
+          minlength="8"
+          placeholder="At least 8 characters"
+          autocomplete="current-password"
+          autocapitalize="off"
+          autocorrect="off"
+          spellcheck="false"
+        >
+      </div>
+
+      <div id="login-note" class="sr-only" aria-live="polite"></div>
+
+      <button type="submit" class="login-btn">
+        <!-- ...existing SVG... -->
+        Sign In
+      </button>
+    </form>
+
+    <div class="login-footer">
+      <p>&copy; 2024 Jolly Children Academic Center. All rights reserved.</p>
+    </div>
+  </div>
+
+  <!-- Error popup (hidden by default) -->
+  <div id="error-popup" role="dialog" aria-modal="true" aria-labelledby="popup-title" hidden>
+    <div class="popup-card" role="document">
+      <div class="popup-header">
+        <h2 id="popup-title" class="popup-title">Sign in error</h2>
+        <button class="popup-close" aria-label="Close error dialog">&times;</button>
+      </div>
+      <p class="popup-message" id="popup-message">An unknown error occurred.</p>
+      <div class="popup-actions">
+        <button class="popup-dismiss">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.querySelector('.login-form');
+      const emailInput = form.querySelector('#email');
+      const passwordInput = form.querySelector('#password');
+      const note = document.getElementById('login-note');
+      const submitBtn = form.querySelector('.login-btn');
+
+      // helpers
+      function showError(msg) {
+        note.classList.remove('sr-only');
+        note.textContent = msg;
+        note.setAttribute('role', 'alert');
+      }
+      function clearError() {
+        note.classList.add('sr-only');
+        note.textContent = '';
+        note.removeAttribute('role');
+      }
+
+      // Small focus/has-value UX from previous script
+      const inputs = form.querySelectorAll('input');
+      inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+          this.parentElement.classList.add('focused');
+        });
+        input.addEventListener('blur', function() {
+          this.parentElement.classList.remove('focused');
+          if (this.value) {
+            this.parentElement.classList.add('has-value');
+          } else {
+            this.parentElement.classList.remove('has-value');
+          }
+        });
+        if (input.value) input.parentElement.classList.add('has-value');
+      });
+
+      // client-side validation before submit
+      form.addEventListener('submit', function(e) {
+        clearError();
+
+        // Basic email check (let browser perform full validation too)
+        const emailValid = emailInput.value && emailInput.checkValidity();
+        const passwordOk = passwordInput.value && passwordInput.value.length >= 8;
+
+        if (!emailValid) {
+          e.preventDefault();
+          showError('Please enter a valid email address.');
+          emailInput.focus();
+          return;
+        }
+
+        if (!passwordOk) {
+          e.preventDefault();
+          showError('Password must be at least 8 characters.');
+          passwordInput.focus();
+          return;
+        }
+
+        // Prevent double submission
+        submitBtn.disabled = true;
+        submitBtn.setAttribute('aria-busy', 'true');
+        // allow actual submission to proceed
+      });
+    });
+
+    // Show modal when server rendered an error (.error-message)
+    (function () {
+      const serverErrorEl = document.querySelector('.error-message');
+      const popup = document.getElementById('error-popup');
+      const popupMsg = document.getElementById('popup-message');
+      const popupClose = popup && popup.querySelector('.popup-close');
+      const popupDismiss = popup && popup.querySelector('.popup-dismiss');
+
+      function openPopup(message) {
+        if (!popup) return;
+        popupMsg.textContent = message || 'Authentication failed. Please try again.';
+        popup.hidden = false;
+        // Focus the close button for accessibility
+        setTimeout(() => popupClose && popupClose.focus(), 10);
+        // Prevent background scrolling while open
+        document.documentElement.style.overflow = 'hidden';
+      }
+
+      function closePopup() {
+        if (!popup) return;
+        popup.hidden = true;
+        document.documentElement.style.overflow = '';
+        // Return focus to email input for quick retry
+        const emailInput = document.querySelector('#email') || document.querySelector('#username');
+        if (emailInput) emailInput.focus();
+      }
+
+      if (serverErrorEl) {
+        const msg = serverErrorEl.textContent.trim();
+        openPopup(msg);
+      }
+
+      if (popupClose) popupClose.addEventListener('click', closePopup);
+      if (popupDismiss) popupDismiss.addEventListener('click', closePopup);
+
+      // Close on Escape
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && popup && !popup.hidden) closePopup();
+      });
+
+      // Clicking the overlay closes the popup (but not clicks inside card)
+      if (popup) {
+        popup.addEventListener('click', function (e) {
+          if (e.target === popup) closePopup();
+        });
+      }
+    })();
+  </script>
+  <script>
+    (function(){
+      const btn=document.getElementById('themeToggle');
+      if(!btn) return;
+      const root=document.documentElement;
+      function getTheme(){return root.getAttribute('data-theme')==='dark'?'dark':'light';}
+      function applyLabel(theme){
+        const dark=theme==='dark';
+        btn.setAttribute('aria-pressed', dark.toString());
+        const l=btn.querySelector('.toggle-label-light');
+        const d=btn.querySelector('.toggle-label-dark');
+        if(l&&d){l.style.display=dark?'none':'inline';d.style.display=dark?'inline':'none';}
+      }
+      applyLabel(getTheme());
+      btn.addEventListener('click',()=>{
+        const current=getTheme();
+        const next=current==='dark'?'light':'dark';
+        if(next==='dark') root.setAttribute('data-theme','dark'); else root.removeAttribute('data-theme');
+        try{localStorage.setItem('admin-theme',next);}catch(e){}
+        applyLabel(next);
+      });
+    })();
+  </script>
+</body>
+</html>

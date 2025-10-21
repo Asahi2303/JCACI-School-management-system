@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facilities Management - Admin Dashboard</title>
+  <link rel="stylesheet" href="/css/admin-dashboard.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <script>(function(){try{const s=localStorage.getItem('admin-theme');const sys=window.matchMedia('(prefers-color-scheme: dark)').matches;const t=s|| (sys?'dark':'light');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();</script>
+  <style>
+    .facilities-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .facility-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .facilities-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:20px; margin-top:20px; }
+    .facility-card { background:var(--surface); border-radius:12px; box-shadow:var(--shadow); overflow:hidden; transition:transform .3s ease, box-shadow .3s ease, border-color .3s ease; border:1px solid var(--border-color); }
+    .facility-card:hover { transform:translateY(-2px); box-shadow:0 8px 18px rgba(0,0,0,0.18); }
+    .facility-image { width:100%; height:200px; object-fit:cover; display:block; }
+    .facility-content { padding:20px; }
+    .facility-title { font-size:18px; font-weight:600; color:var(--primary-dark); margin:0 0 10px; }
+    .facility-description { color:var(--muted); font-size:14px; line-height:1.5; margin:0 0 15px; }
+    .facility-actions { display:flex; gap:10px; justify-content:flex-end; }
+    .btn { padding:8px 16px; border:none; border-radius:6px; font-size:14px; font-weight:500; cursor:pointer; text-decoration:none; display:inline-block; transition:background .3s ease, color .3s ease, box-shadow .3s ease; }
+    .btn-edit { background:var(--primary); color:#fff; }
+    .btn-edit:hover { background:var(--primary-dark); }
+    .btn-delete { background:#dc3545; color:#fff; }
+    .btn-delete:hover { background:#b72a38; }
+    [data-theme="dark"] .btn-delete { background:#b72a38; }
+    [data-theme="dark"] .btn-delete:hover { background:#9c2330; }
+    .add-facility-section { background:var(--surface); padding:30px; border-radius:12px; box-shadow:var(--shadow); margin-bottom:30px; text-align:center; border:1px solid var(--border-color); }
+    .add-facility-btn { background:var(--primary); color:#fff; padding:15px 30px; border:none; border-radius:8px; font-size:16px; font-weight:600; cursor:pointer; text-decoration:none; display:inline-block; transition:background-color .3s ease; }
+    .add-facility-btn:hover { background:var(--primary-dark); }
+    .error-message, .success-message { padding:12px; border-radius:8px; margin-bottom:20px; display:flex; align-items:center; gap:8px; font-size:14px; border-left:4px solid; }
+    .error-message { background:#ffebee; color:#c62828; border-left-color:#f44336; }
+    .success-message { background:#e8f5e9; color:var(--primary-dark); border-left-color:var(--primary); }
+    [data-theme="dark"] .error-message { background:#3a1e1e; color:#ffb9b9; border-left-color:#ff6b6b; }
+    [data-theme="dark"] .success-message { background:#1d3321; color:var(--primary-light); border-left-color:var(--primary-light); }
+    .no-facilities { text-align:center; color:var(--muted); font-style:italic; margin-top:40px; }
+    .admin-toolbar { display:flex; gap:12px; align-items:center; justify-content:space-between; margin:20px 0; flex-wrap:wrap; }
+    .search-input { padding:10px 12px; border-radius:8px; border:1px solid var(--border-color); width:320px; background:var(--surface); color:var(--text); }
+    .search-input:focus { outline:2px solid var(--primary-light); outline-offset:2px; }
+    .toolbar-actions { display:flex; gap:8px; align-items:center; }
+    .chip { background:var(--gradient-soft-start); color:var(--primary-dark); padding:6px 10px; border-radius:999px; font-size:13px; border:1px solid var(--border-color); }
+    [data-theme="dark"] .chip { background:#243326; color:var(--primary-light); border-color:var(--border-color); }
+    .notify { position:fixed; right:20px; bottom:20px; z-index:1200; min-width:220px; }
+    .notify .msg { background:var(--primary-dark); color:#fff; padding:10px 14px; border-radius:8px; box-shadow:0 6px 18px rgba(0,0,0,0.5); font-size:14px; }
+    [data-theme="dark"] .notify .msg { background:var(--primary); }
+    /* Modal */
+    .facility-modal-overlay { position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:1100; background:rgba(0,0,0,0.45); }
+    .facility-modal { background:var(--surface); border-radius:12px; max-width:420px; width:100%; padding:24px; box-shadow:0 10px 30px -5px rgba(0,0,0,0.4); border:1px solid var(--border-color); }
+    .facility-modal h3 { margin:0 0 12px; font-size:18px; font-weight:600; color:var(--primary-dark); }
+    .facility-modal p { margin:0 0 22px; font-size:14px; line-height:1.5; color:var(--muted); }
+    .facility-modal-actions { display:flex; justify-content:flex-end; gap:12px; }
+    .btn-cancel { background:#e5e7eb; color:#374151; border:1px solid #d1d5db; }
+    .btn-cancel:hover { background:#d8dadf; }
+    [data-theme="dark"] .btn-cancel { background:#2d3a2e; color:var(--text); border:1px solid var(--border-color); }
+    [data-theme="dark"] .btn-cancel:hover { background:#364738; }
+    .btn-danger { background:#dc2626; color:#fff; border:1px solid #b91c1c; }
+    .btn-danger:hover { background:#b91c1c; }
+    [data-theme="dark"] .btn-danger { background:#b91c1c; border-color:#8f1515; }
+    [data-theme="dark"] .btn-danger:hover { background:#991212; }
+    @media (max-width:700px){ .search-input{ width:100%; } .admin-toolbar{ flex-direction:column; align-items:stretch } }
+    .search-input {
+      padding:10px 12px;
+      border-radius:8px;
+      border:1px solid #e0e0e0;
+      width:320px;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .toolbar-actions { display:flex; gap:8px; align-items:center; }
+    .chip { background:#f1f5f1; color:#2e7d32; padding:6px 10px; border-radius:999px; font-size:13px; }
+    .notify { position: fixed; right: 20px; bottom: 20px; z-index: 1200; min-width: 220px; }
+    .notify .msg { background: #2e7d32; color:white; padding:10px 14px; border-radius:8px; box-shadow:0 6px 18px rgba(0,0,0,0.12);} 
+    @media (max-width:700px){ .search-input{ width:100%; } .admin-toolbar{ flex-direction:column; align-items:stretch } }
+  </style>
+</head>
+<body>
+  <!-- Admin Header -->
+  <header class="admin-header">
+    <nav class="admin-nav">
+      <div class="admin-brand">
+        <div class="logo-wrapper">
+          <img src="/images/brand-logo.png" alt="Site Logo" class="admin-logo" loading="lazy" />
+        </div>
+        <h1>Admin Portal</h1>
+      </div>
+      <div class="admin-nav-links">
+        <button type="button" id="themeToggle" class="theme-toggle" aria-pressed="false" style="margin-right:.5rem;">
+          <span class="toggle-label-light">🌞</span>
+          <span class="toggle-label-dark" style="display:none;">🌙</span>
+          <span class="sr-only">Toggle theme</span>
+        </button>
+        <a href="/admin">Dashboard</a>
+        <a href="/admin/facilities" aria-current="true">Facilities</a>
+        <a href="/admin/testimonials">Testimonials</a>
+        <a href="/admin/settings">Settings</a>
+        <form action="/admin/logout" method="POST" style="display:inline;">
+          <button type="submit" class="logout-btn">Logout</button>
+        </form>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+    <div class="admin-hero">
+      <h2>Facilities Management</h2>
+      <p>Add, edit, or remove school facilities and amenities</p>
+    </div>
+
+      <% /* Defensive: ensure facilities is always an array to prevent runtime ReferenceError */ %>
+      <% const facilitiesSafe = (typeof facilities !== 'undefined' && Array.isArray(facilities)) ? facilities : []; %>
+      <% /* For backward compatibility keep using variable name in template logic via alias */ %>
+      <% const facilitiesLen = facilitiesSafe.length; %>
+
+    <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+      <div class="error-message">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle; margin-right: 8px;">
+          <circle cx="12" cy="12" r="10" stroke="#f44336" stroke-width="2"/>
+          <line x1="12" y1="8" x2="12" y2="12" stroke="#f44336" stroke-width="2"/>
+          <line x1="12" y1="16" x2="12.01" y2="16" stroke="#f44336" stroke-width="2"/>
+        </svg>
+        <%= errorMessage %>
+      </div>
+    <% } %>
+
+    <% if (typeof successMessage !== 'undefined' && successMessage) { %>
+      <div class="success-message">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle; margin-right: 8px;">
+          <circle cx="12" cy="12" r="10" stroke="#4caf50" stroke-width="2"/>
+          <path d="M9 12l2 2 4-4" stroke="#4caf50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <%= successMessage %>
+      </div>
+    <% } %>
+
+    <!-- Add New Facility Section -->
+    <div class="add-facility-section">
+      <h3>Add New Facility</h3>
+      <p>Upload a new facility with image and description</p>
+      <form action="/admin/facilities/upload" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
+        <div style="display: flex; flex-direction: column; gap: 15px; max-width: 400px; margin: 0 auto;">
+          <input type="text" name="title" placeholder="Facility Title" required style="padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+          <textarea name="description" placeholder="Facility Description" rows="3" required style="padding: 10px; border: 1px solid #ddd; border-radius: 6px;"></textarea>
+          <input type="file" name="image" accept="image/*" required style="padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+          <button type="submit" class="add-facility-btn">Add Facility</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Facilities Grid -->
+  <% if (facilitiesLen > 0) { %>
+      <div class="admin-toolbar">
+        <div style="display:flex;gap:12px;align-items:center;">
+          <input id="facilitySearch" class="search-input" placeholder="Search facilities by title or description..." />
+          <div class="chip"><%= facilitiesLen %> facilities</div>
+        </div>
+        <div class="toolbar-actions">
+          <a href="#add" onclick="document.querySelector('.add-facility-section input[name=title]').focus();return false;" class="btn add-facility-btn">Add Facility</a>
+        </div>
+      </div>
+
+      <div class="facilities-grid" id="facilitiesGrid">
+  <% facilitiesSafe.forEach(facility => { %>
+          <div class="facility-card" data-title="<%= (facility.title || '').toLowerCase() %>" data-desc="<%= (facility.description || '').toLowerCase() %>" id="facility-<%= facility.id %>">
+            <img src="<%= facility.imageThumb || facility.imageUrl %>" alt="<%= facility.title %>" class="facility-image">
+            <div class="facility-content">
+              <h3 class="facility-title"><%= facility.title %></h3>
+              <p class="facility-description"><%= facility.description %></p>
+              <div class="facility-actions">
+    <a href="/admin/facilities/<%= facility.id %>/edit" class="btn btn-edit">Edit</a>
+    <button class="btn btn-delete"
+      data-action="delete-facility"
+      data-id="<%= facility.id %>"
+      data-endpoint="/admin/facilities/<%= facility.id %>/delete"
+      data-confirm-title="Delete Facility"
+      data-confirm-message="Permanently delete facility '<%= (facility.title||'').replace(/"/g,'&quot;') %>'? This cannot be undone." >Delete</button>
+              </div>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    <% } else { %>
+      <div class="no-facilities">
+        <p>No facilities found. Add your first facility above!</p>
+      </div>
+    <% } %>
+  </main>
+  <div class="notify" id="notify" style="display:none;"></div>
+  <script>
+    // Simple search/filter
+    (function(){
+      const input = document.getElementById('facilitySearch');
+      const grid = document.getElementById('facilitiesGrid');
+      if (!input || !grid) return;
+      input.addEventListener('input', function(){
+        const q = this.value.trim().toLowerCase();
+        const cards = Array.from(grid.querySelectorAll('.facility-card'));
+        cards.forEach(card => {
+          const title = card.getAttribute('data-title') || '';
+          const desc = card.getAttribute('data-desc') || '';
+          const match = !q || title.indexOf(q) !== -1 || desc.indexOf(q) !== -1;
+          card.style.display = match ? '' : 'none';
+        });
+      });
+    })();
+
+    // Notification helper
+    function notify(message, timeout = 2500) {
+      const n = document.getElementById('notify');
+      n.innerHTML = '<div class="msg">' + message + '</div>';
+      n.style.display = 'block';
+      clearTimeout(n._t);
+      n._t = setTimeout(()=>{ n.style.display='none'; n.innerHTML=''; }, timeout);
+    }
+
+    // AJAX delete for immediate feedback
+    // Modal confirmation (reuses pattern from testimonials modal but local + minimal)
+    (function(){
+      const modalHtml = `
+        <div id="facilityConfirmModal" class="facility-modal-overlay">
+          <div class="facility-modal" role="dialog" aria-modal="true" aria-labelledby="facConfirmTitle" aria-describedby="facConfirmMsg">
+            <h3 id="facConfirmTitle">Confirm Delete</h3>
+            <p id="facConfirmMsg">Are you sure?</p>
+            <div class="facility-modal-actions">
+              <button type="button" id="facCancelBtn" class="btn btn-cancel">Cancel</button>
+              <button type="button" id="facProceedBtn" class="btn btn-danger">Delete</button>
+            </div>
+          </div>
+        </div>`;
+      document.body.insertAdjacentHTML('beforeend', modalHtml);
+      const modal = document.getElementById('facilityConfirmModal');
+      const titleEl = document.getElementById('facConfirmTitle');
+      const msgEl = document.getElementById('facConfirmMsg');
+      const cancelBtn = document.getElementById('facCancelBtn');
+      const proceedBtn = document.getElementById('facProceedBtn');
+      let pendingEndpoint = null;
+      function openModal({title, message, endpoint, proceedLabel='Delete'}) {
+        titleEl.textContent = title || 'Confirm';
+        msgEl.textContent = message || 'Are you sure?';
+        proceedBtn.textContent = proceedLabel;
+        pendingEndpoint = endpoint;
+        modal.style.display = 'flex';
+        setTimeout(()=>proceedBtn.focus(),30);
+      }
+      function closeModal(){ modal.style.display='none'; pendingEndpoint=null; }
+      cancelBtn.addEventListener('click', closeModal);
+      modal.addEventListener('click', e=>{ if(e.target===modal) closeModal(); });
+      document.addEventListener('keydown', e=>{ if(e.key==='Escape' && modal.style.display==='flex') closeModal(); });
+      proceedBtn.addEventListener('click', async ()=>{
+        if(!pendingEndpoint) { closeModal(); return; }
+        try {
+          const res = await fetch(pendingEndpoint, { method:'POST', headers:{ 'Accept':'text/html' } });
+          if(res.ok){
+            // remove card
+            const id = pendingEndpoint.split('/').slice(-2)[0];
+            const card = document.getElementById('facility-'+id);
+            if(card) card.remove();
+            notify('Facility deleted');
+          } else {
+            const txt = await res.text();
+            notify('Delete failed: ' + (txt || res.statusText));
+          }
+        } catch(err){
+          console.error('facility delete error', err);
+          notify('Delete request failed');
+        } finally { closeModal(); }
+      });
+      document.addEventListener('click', e => {
+        const btn = e.target.closest('button[data-action="delete-facility"]');
+        if(!btn) return;
+        const endpoint = btn.dataset.endpoint;
+        const title = btn.dataset.confirmTitle;
+        const message = btn.dataset.confirmMessage;
+        if(!endpoint) return;
+        openModal({title, message, endpoint, proceedLabel:'Delete'});
+      });
+    })();
+  </script>
+  <script>
+    (function(){
+      const btn = document.getElementById('themeToggle');
+      if(!btn) return; const root=document.documentElement;
+      function getTheme(){return root.getAttribute('data-theme')==='dark'?'dark':'light';}
+      function applyLabel(th){const dark=th==='dark';btn.setAttribute('aria-pressed',dark.toString());const l=btn.querySelector('.toggle-label-light');const d=btn.querySelector('.toggle-label-dark');if(l&&d){l.style.display=dark?'none':'inline';d.style.display=dark?'inline':'none';}}
+      applyLabel(getTheme());
+      btn.addEventListener('click',()=>{const c=getTheme();const n=c==='dark'?'light':'dark'; if(n==='dark')root.setAttribute('data-theme','dark'); else root.removeAttribute('data-theme'); try{localStorage.setItem('admin-theme',n);}catch(e){} applyLabel(n);});
+    })();
+  </script>
+</body>
+</html>
