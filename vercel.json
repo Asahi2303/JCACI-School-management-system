@@ -4,7 +4,8 @@
     { "src": "index.html", "use": "@vercel/static" },
     { "src": "styles.css", "use": "@vercel/static" },
     { "src": "script.js", "use": "@vercel/static" },
-    { "src": "public/**/*", "use": "@vercel/static" }
+    { "src": "public/**/*", "use": "@vercel/static" },
+    { "src": "resources/**", "use": "@vercel/static" }
   ],
   "rewrites": [
   { "source": "/api/(.*)", "destination": "https://jcaci-backend.onrender.com/api/$1" },
