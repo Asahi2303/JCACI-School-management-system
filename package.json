@@ -1,4 +1,16 @@
 {
+  "name": "jcaci-site",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.57.4",
+    "nodemailer": "^6.9.3"
+  }
+}
+{
   "name": "jolly-children-site",
   "version": "1.0.0",
   "description": "Jolly Children Academic Center website with frontend and backend",
