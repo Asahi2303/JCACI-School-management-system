@@ -2,22 +2,18 @@
   "name": "jcaci-site",
   "version": "1.0.0",
   "private": true,
+  "description": "Jolly Children Academic Center website with frontend and backend",
+  "author": "Jolly Children Academic Center",
+  "license": "MIT",
   "engines": {
     "node": ">=18"
   },
-  "dependencies": {
-    "@supabase/supabase-js": "^2.57.4",
-    "nodemailer": "^6.9.3"
-  }
-}
-{
-  "name": "jolly-children-site",
-  "version": "1.0.0",
-  "description": "Jolly Children Academic Center website with frontend and backend",
   "scripts": {
-    "dev": "cd website-backend && npm run dev",
-    "start": "cd website-backend && npm start",
-    "install": "cd website-backend && npm install",
+  "start": "cd website-backend && node server-fixed.js",
+  "dev": "cd website-backend && nodemon server-fixed.js",
+  "dev-backend": "cd website-backend && npm run dev",
+  "start-backend": "cd website-backend && npm start",
+    "install-backend": "cd website-backend && npm install",
     "test": "cd website-backend && node test-server.js",
     "server": "cd website-backend && node server-simple.js",
     "diagnose": "cd website-backend && node diagnose-db.js",
@@ -31,17 +27,13 @@
     "school",
     "website"
   ],
-  "author": "Jolly Children Academic Center",
-  "license": "MIT",
   "dependencies": {
-    "mongodb": "^6.20.0"
-    
-  },
-  "dependencies": {
+    "@supabase/supabase-js": "^2.57.4",
+    "nodemailer": "^6.9.3",
+    "mongodb": "^6.20.0",
     "@tensorflow/tfjs-node": "^4.15.0",
     "opencv4nodejs": "^5.6.0",
     "winston": "^3.11.0",
     "config": "^3.3.9"
   }
-
 }
