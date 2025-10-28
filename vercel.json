@@ -7,8 +7,8 @@
     { "src": "public/**/*", "use": "@vercel/static" }
   ],
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "https://jcaci-backend.onrender.com/api/$1" },
-    { "source": "/uploads/:path*", "destination": "https://jcaci-backend.onrender.com/uploads/:path*" },
+  { "source": "/api/(.*)", "destination": "https://jcaci-backend.onrender.com/api/$1" },
+  { "source": "/uploads/:path*", "destination": "https://jcaci-backend.onrender.com/uploads/:path*" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
