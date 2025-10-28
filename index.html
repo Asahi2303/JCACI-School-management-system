@@ -721,41 +721,7 @@ lara071970@gmail.com</span> <span class="inline-actions"><button type="button" c
         document.addEventListener('keydown', (e) => { if (e.key === 'Escape') lb.classList.remove('open'); });
       })();
 
-      // Contact Form Submission
-      (function() {
-        const form = document.getElementById('contact-form');
-        const formNote = document.getElementById('form-note');
-        if (!form || !formNote) return;
-
-        form.addEventListener('submit', async (e) => {
-          e.preventDefault();
-          const formData = new FormData(form);
-          const data = Object.fromEntries(formData.entries());
-          const submitButton = form.querySelector('button[type="submit"]');
-
-          submitButton.disabled = true;
-          formNote.textContent = 'Sending...';
-
-          try {
-            const response = await fetch('/api/contact', { // Your future backend endpoint
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(data),
-            });
-
-            if (response.ok) {
-              formNote.textContent = 'Message sent successfully!';
-              form.reset();
-            } else {
-              throw new Error('Something went wrong.');
-            }
-          } catch (error) {
-            formNote.textContent = 'Error: Could not send message.';
-          } finally {
-            submitButton.disabled = false;
-          }
-        });
-      })();
+      <!-- Contact form handler moved to script.js to avoid duplicate submissions -->
 
   // FINAL: Responsive Facebook Plugin Fix
       window.addEventListener('load', function() {

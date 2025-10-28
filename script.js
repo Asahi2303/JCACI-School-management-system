@@ -318,6 +318,8 @@
   const form = document.getElementById('contact-form');
   const formNote = document.getElementById('form-note');
   if (!form || !formNote) return;
+  if (form.dataset.bound === '1') return; // avoid duplicate binding
+  form.dataset.bound = '1';
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -325,21 +327,42 @@
     const data = Object.fromEntries(formData.entries());
     const submitButton = form.querySelector('button[type="submit"]');
 
+    // Simple client-side validation to give fast feedback
+    const errors = [];
+    const name = (data.name || '').trim();
+    const email = (data.email || '').trim();
+    const message = (data.message || '').trim();
+    const emailRe = /^(?!.{255,})([A-Z0-9._%+-]{1,64})@([A-Z0-9.-]+)\.[A-Z]{2,}$/i;
+    if (!name || name.length < 2) errors.push('Please enter your name.');
+    if (!email || !emailRe.test(email)) errors.push('Please enter a valid email.');
+    if (!message || message.length < 10) errors.push('Please enter a longer message.');
+    if (errors.length) {
+      formNote.textContent = errors.join(' ');
+      const firstInvalid = !name ? form.querySelector('#name') : (!email || !emailRe.test(email) ? form.querySelector('#email') : form.querySelector('#message'));
+      firstInvalid && firstInvalid.focus();
+      return;
+    }
+
     submitButton.disabled = true;
     formNote.textContent = 'Sending...';
 
     try { // Add try block here
       const response = await fetch('/api/contact', { // Your future backend endpoint
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify(data),
       });
 
       if (response.ok) {
-        formNote.textContent = 'Message sent successfully!';
+        // Try to parse JSON; fallback to ok message
+        let msg = 'Message sent successfully!';
+        try { const j = await response.json(); if (j && j.status === 'ok') msg = 'Message sent successfully!'; } catch (_) {}
+        formNote.textContent = msg;
         form.reset();
       } else {
-        throw new Error('Something went wrong.');
+        let errMsg = 'Something went wrong.';
+        try { const j = await response.json(); if (j && j.errors) errMsg = j.errors.join(' '); } catch (_) {}
+        throw new Error(errMsg);
       }
     } catch (error) { // Add catch block here
       formNote.textContent = 'Error: Could not send message. ' + error.message;

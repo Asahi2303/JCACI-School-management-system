@@ -16,18 +16,19 @@
     }
 
     .settings-section {
-      background: white;
+      background: var(--surface);
       padding: 30px;
       border-radius: 12px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
     }
 
     .settings-section h3 {
-      color: #2E7D32;
+      color: var(--primary-dark);
       margin-bottom: 20px;
       font-size: 20px;
       font-weight: 600;
-      border-bottom: 2px solid #2E7D32;
+      border-bottom: 2px solid var(--primary);
       padding-bottom: 10px;
     }
 
@@ -46,7 +47,7 @@
 
     .form-group label {
       font-weight: 600;
-      color: #2E7D32;
+      color: var(--primary-dark);
       font-size: 14px;
     }
 
@@ -54,17 +55,19 @@
     .form-group textarea,
     .form-group select {
       padding: 12px;
-      border: 2px solid #e0e0e0;
+      border: 2px solid var(--border-color);
       border-radius: 8px;
       font-size: 14px;
-      transition: border-color 0.3s ease;
+      background: var(--surface);
+      color: var(--text);
+      transition: border-color 0.3s ease, background 0.3s ease;
     }
 
     .form-group input:focus,
     .form-group textarea:focus,
     .form-group select:focus {
       outline: none;
-      border-color: #2E7D32;
+      border-color: var(--primary);
     }
 
     .form-group textarea {
@@ -82,7 +85,7 @@
     .checkbox-group input[type="checkbox"] {
       width: 18px;
       height: 18px;
-      accent-color: #2E7D32;
+      accent-color: var(--primary);
     }
 
     .checkbox-group label {
@@ -105,8 +108,8 @@
     }
 
     .submit-btn {
-      background: #2E7D32;
-      color: white;
+      background: var(--primary);
+      color: #fff;
       padding: 14px 28px;
       border: none;
       border-radius: 8px;
@@ -118,16 +121,16 @@
     }
 
     .submit-btn:hover {
-      background: #1B5E20;
+      background: var(--primary-dark);
     }
 
     .settings-info {
-      background: #e8f5e8;
-      color: #2e7d32;
+      background: var(--gradient-soft-start);
+      color: var(--primary-dark);
       padding: 15px;
       border-radius: 8px;
       margin-bottom: 20px;
-      border-left: 4px solid #4caf50;
+      border-left: 4px solid var(--primary);
     }
 
     .settings-info svg {
@@ -136,22 +139,22 @@
     }
 
     .danger-zone {
-      border: 2px solid #f44336;
-      background: #ffebee;
+      border: 2px solid var(--danger);
+      background: var(--danger-bg);
       padding: 20px;
       border-radius: 8px;
       margin-top: 30px;
     }
 
     .danger-zone h4 {
-      color: #f44336;
+      color: var(--danger);
       margin-bottom: 15px;
       font-size: 18px;
     }
 
     .danger-btn {
-      background: #f44336;
-      color: white;
+      background: var(--danger);
+      color: #fff;
       padding: 12px 24px;
       border: none;
       border-radius: 6px;
@@ -165,7 +168,8 @@
     }
 
     .current-values {
-      background: #f5f5f5;
+      background: var(--surface);
+      border: 1px solid var(--border-color);
       padding: 15px;
       border-radius: 8px;
       margin-top: 10px;
@@ -173,14 +177,14 @@
 
     .current-values h5 {
       margin: 0 0 10px 0;
-      color: #333;
+      color: var(--text);
       font-size: 14px;
       font-weight: 600;
     }
 
     .current-values p {
       margin: 5px 0;
-      color: #666;
+      color: var(--muted);
       font-size: 13px;
     }
 
@@ -233,6 +237,40 @@
       </div>
     </nav>
   </header>
+  <script>
+    (function () {
+      const btn = document.getElementById('themeToggle');
+      if (!btn) return;
+      const root = document.documentElement;
+      function getTheme() {
+        return root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+      }
+      function applyLabel(theme) {
+        const isDark = theme === 'dark';
+        btn.setAttribute('aria-pressed', String(isDark));
+        const l = btn.querySelector('.toggle-label-light');
+        const d = btn.querySelector('.toggle-label-dark');
+        if (l && d) {
+          l.style.display = isDark ? 'none' : 'inline';
+          d.style.display = isDark ? 'inline' : 'none';
+        }
+      }
+      applyLabel(getTheme());
+      btn.addEventListener('click', () => {
+        const current = getTheme();
+        const next = current === 'dark' ? 'light' : 'dark';
+        if (next === 'dark') {
+          root.setAttribute('data-theme', 'dark');
+        } else {
+          root.removeAttribute('data-theme');
+        }
+        try {
+          localStorage.setItem('admin-theme', next);
+        } catch (e) {}
+        applyLabel(next);
+      });
+    })();
+  </script>
 
   <!-- Main Content -->
   <main class="admin-main">
