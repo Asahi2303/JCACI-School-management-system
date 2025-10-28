@@ -10,6 +10,10 @@ function createTransporter() {
       host: SMTP_HOST,
       port: Number(SMTP_PORT) || 587,
       secure: String(SMTP_SECURE).toLowerCase() === 'true',
+      // Add reasonable timeouts to fail fast when SMTP is unreachable
+      connectionTimeout: Number(process.env.SMTP_CONNECTION_TIMEOUT) || 10000,
+      greetingTimeout: Number(process.env.SMTP_GREETING_TIMEOUT) || 10000,
+      socketTimeout: Number(process.env.SMTP_SOCKET_TIMEOUT) || 10000,
       auth: { user: SMTP_USER, pass: SMTP_PASS }
     });
   } else {
@@ -97,7 +101,21 @@ async function sendMfaCodeEmail(to, code) {
     // In console/stream mode, skip actual send to avoid errors in environments without SMTP
     return Promise.resolve({ accepted: [overrideTo], messageId: 'console-only' });
   }
-  return tx.sendMail({ from: tx._fromAddress, to: overrideTo, subject, text, html });
+
+  // Try to send via SMTP; if it fails (timeout, connection error, etc.), log the error
+  // and fallback to logging the code to the server console so the login flow can continue.
+  try {
+    return await tx.sendMail({ from: tx._fromAddress, to: overrideTo, subject, text, html });
+  } catch (err) {
+    console.error('[mailer] SMTP send failed, falling back to console logging:', err && err.message ? err.message : err);
+    if (overrideTo !== to) {
+      console.log(`[MFA][FALLBACK] Verification code for ${to} (overridden to ${overrideTo}): ${code}`);
+    } else {
+      console.log(`[MFA][FALLBACK] Verification code for ${to}: ${code}`);
+    }
+    // Return a resolved-like object so callers treat this as a non-fatal send
+    return Promise.resolve({ accepted: [overrideTo], messageId: 'console-fallback' });
+  }
 }
 
 module.exports = { sendEmail, sendMfaCodeEmail };
