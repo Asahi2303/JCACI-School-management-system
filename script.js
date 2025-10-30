@@ -612,6 +612,11 @@
 
   function animateValue(el, end) {
     if (!el) return;
+    // If the element already displays the desired end value (hardcoded/static), do nothing.
+    try {
+      const current = parseInt(String(el.textContent || '').replace(/[^0-9\-]/g,''), 10);
+      if (!isNaN(current) && current === Number(end)) return;
+    } catch (ee) { /* ignore parsing errors and continue animation */ }
     const duration = 1200;
     const start = 0;
     const range = end - start;
