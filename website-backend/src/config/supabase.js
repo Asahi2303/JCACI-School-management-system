@@ -1,4 +1,6 @@
 // Load .env from the current working directory (website-backend/.env)
+// Load environment variables from process environment (Render provides env vars)
+// Avoid hard-coded local paths so this module works in deployed environments.
 require('dotenv').config();
 const { createClient } = require('@supabase/supabase-js');
 
