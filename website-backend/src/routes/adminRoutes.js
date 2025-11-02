@@ -5,8 +5,7 @@ const path = require('path');
 const multer = require('multer');
 const fs = require('fs');
 const crypto = require('crypto');
-const { sendMfaCodeEmail } = require('../utils/mailer');
-const { sendEmail } = require('../utils/mailer');
+const { sendMfaCodeEmail, sendEmail, verifySmtp } = require('../utils/mailer');
 
 // Middleware to check if user is authenticated
 const isAuthenticated = (req, res, next) => {
@@ -328,5 +327,16 @@ router.post('/test-mail', isAuthenticated, async (req, res) => {
   } catch (err) {
     console.error('test-mail error:', err && err.message ? err.message : err);
     return res.status(500).json({ ok: false, error: 'Failed to send test email.' });
+  }
+});
+
+// Admin-only: verify SMTP connectivity and configuration quickly
+router.post('/test-smtp', isAuthenticated, async (req, res) => {
+  try {
+    const result = await verifySmtp();
+    return res.json({ ok: !!result.ok, result });
+  } catch (err) {
+    console.error('test-smtp error:', err && err.message ? err.message : err);
+    return res.status(500).json({ ok: false, error: 'Failed to verify SMTP.' });
   }
 });

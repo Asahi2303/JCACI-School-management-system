@@ -46,11 +46,23 @@ async function sendEmail({ to, subject, text, html }) {
   if (sgMail) {
     try {
       const from = process.env.FROM_EMAIL || process.env.SMTP_USER || 'no-reply@localhost';
-      const [resp] = await sgMail.send({ to, from, subject, text, html });
+      if (!process.env.FROM_EMAIL) {
+        console.warn('[mailer] FROM_EMAIL not set. SendGrid requires a verified sender/domain. Set FROM_EMAIL to a verified sender in your SendGrid account.');
+      }
+      const enableSandbox = String(process.env.SENDGRID_SANDBOX_MODE || '').toLowerCase() === 'true';
+      const payload = enableSandbox ? { to, from, subject, text, html, mailSettings: { sandboxMode: { enable: true } } } : { to, from, subject, text, html };
+      const [resp] = await sgMail.send(payload);
       console.log('[mailer] email sent via SendGrid:', subject, resp && resp.statusCode);
       return { provider: 'sendgrid', statusCode: resp && resp.statusCode };
     } catch (err) {
-      console.error('[mailer] SendGrid send failed, will fallback to SMTP/console:', err && err.message ? err.message : err);
+      try {
+        const status = err && err.code ? ` code=${err.code}` : '';
+        const respCode = err && err.response && err.response.statusCode ? ` status=${err.response.statusCode}` : '';
+        const respErrors = err && err.response && err.response.body && err.response.body.errors ? ` errors=${JSON.stringify(err.response.body.errors)}` : '';
+        console.error(`[mailer] SendGrid send failed, will fallback to SMTP/console:${status}${respCode}${respErrors}`);
+      } catch (logErr) {
+        console.error('[mailer] SendGrid send failed, will fallback to SMTP/console:', err && err.message ? err.message : err);
+      }
     }
   }
   // Fallback to SMTP (or stream console)
@@ -120,11 +132,23 @@ async function sendMfaCodeEmail(to, code) {
   if (sgMail) {
     try {
       const from = process.env.FROM_EMAIL || process.env.SMTP_USER || 'no-reply@localhost';
-      const [resp] = await sgMail.send({ to: overrideTo, from, subject, text, html });
+      if (!process.env.FROM_EMAIL) {
+        console.warn('[mailer] FROM_EMAIL not set. SendGrid requires a verified sender/domain. Set FROM_EMAIL to a verified sender in your SendGrid account.');
+      }
+      const enableSandbox = String(process.env.SENDGRID_SANDBOX_MODE || '').toLowerCase() === 'true';
+      const payload = enableSandbox ? { to: overrideTo, from, subject, text, html, mailSettings: { sandboxMode: { enable: true } } } : { to: overrideTo, from, subject, text, html };
+      const [resp] = await sgMail.send(payload);
       console.log('[mailer] MFA email sent via SendGrid:', resp && resp.statusCode);
       return { provider: 'sendgrid', statusCode: resp && resp.statusCode };
     } catch (err) {
-      console.error('[mailer] SendGrid MFA send failed, will fallback to SMTP/console:', err && err.message ? err.message : err);
+      try {
+        const status = err && err.code ? ` code=${err.code}` : '';
+        const respCode = err && err.response && err.response.statusCode ? ` status=${err.response.statusCode}` : '';
+        const respErrors = err && err.response && err.response.body && err.response.body.errors ? ` errors=${JSON.stringify(err.response.body.errors)}` : '';
+        console.error(`[mailer] SendGrid MFA send failed, will fallback to SMTP/console:${status}${respCode}${respErrors}`);
+      } catch (logErr) {
+        console.error('[mailer] SendGrid MFA send failed, will fallback to SMTP/console:', err && err.message ? err.message : err);
+      }
     }
   }
 
@@ -143,4 +167,18 @@ async function sendMfaCodeEmail(to, code) {
   }
 }
 
-module.exports = { sendEmail, sendMfaCodeEmail };
+// Verify SMTP connectivity for diagnostics
+async function verifySmtp() {
+  const tx = createTransporter();
+  if (tx._isStream) {
+    return { ok: false, mode: 'stream', message: 'SMTP not configured; using console stream transport.' };
+  }
+  try {
+    await tx.verify();
+    return { ok: true, host: tx.options && tx.options.host, port: tx.options && tx.options.port, secure: tx.options && tx.options.secure };
+  } catch (err) {
+    return { ok: false, error: err && err.message ? err.message : String(err) };
+  }
+}
+
+module.exports = { sendEmail, sendMfaCodeEmail, verifySmtp };
