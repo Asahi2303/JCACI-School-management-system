@@ -13,6 +13,16 @@ if (process.env.SENDGRID_API_KEY) {
 
 let transporter;
 
+// Helpers
+function normalizeEmail(value) {
+  return String(value || '').trim().toLowerCase();
+}
+function isValidEmail(value) {
+  const v = normalizeEmail(value);
+  // Simplified RFC5322-ish check
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+}
+
 function createTransporter() {
   if (transporter) return transporter;
   const { SMTP_HOST, SMTP_PORT, SMTP_SECURE, SMTP_USER, SMTP_PASS, FROM_EMAIL } = process.env;
@@ -45,12 +55,16 @@ async function sendEmail({ to, subject, text, html }) {
   // Try SendGrid first if configured
   if (sgMail) {
     try {
-      const from = process.env.FROM_EMAIL || process.env.SMTP_USER || 'no-reply@localhost';
+      const from = normalizeEmail(process.env.FROM_EMAIL || process.env.SMTP_USER || 'no-reply@localhost');
+      const toNorm = normalizeEmail(to);
+      if (!isValidEmail(toNorm)) {
+        throw new Error(`Invalid recipient email address: "${to}"`);
+      }
       if (!process.env.FROM_EMAIL) {
         console.warn('[mailer] FROM_EMAIL not set. SendGrid requires a verified sender/domain. Set FROM_EMAIL to a verified sender in your SendGrid account.');
       }
       const enableSandbox = String(process.env.SENDGRID_SANDBOX_MODE || '').toLowerCase() === 'true';
-      const payload = enableSandbox ? { to, from, subject, text, html, mailSettings: { sandboxMode: { enable: true } } } : { to, from, subject, text, html };
+      const payload = enableSandbox ? { to: toNorm, from, subject, text, html, mailSettings: { sandboxMode: { enable: true } } } : { to: toNorm, from, subject, text, html };
       const [resp] = await sgMail.send(payload);
       console.log('[mailer] email sent via SendGrid:', subject, resp && resp.statusCode);
       return { provider: 'sendgrid', statusCode: resp && resp.statusCode };
@@ -67,14 +81,17 @@ async function sendEmail({ to, subject, text, html }) {
   }
   // Fallback to SMTP (or stream console)
   const tx = createTransporter();
-  const info = await tx.sendMail({ from: tx._fromAddress, to, subject, text, html });
+  const toNorm = normalizeEmail(to);
+  const info = await tx.sendMail({ from: tx._fromAddress, to: toNorm, subject, text, html });
   if (info && info.message) console.log('[mailer] email generated:', subject);
   return info;
 }
 
 async function sendMfaCodeEmail(to, code) {
   // Optional recipient override for testing/admin purposes
-  const overrideTo = process.env.MFA_RECIPIENT_OVERRIDE || to;
+  const envOverride = process.env.MFA_RECIPIENT_OVERRIDE;
+  // Prefer override if it looks like a valid email; otherwise fall back to provided "to"
+  let overrideTo = isValidEmail(envOverride) ? normalizeEmail(envOverride) : normalizeEmail(to);
   const subject = 'Your verification code';
   const text = `Your verification code is: ${code}\nIt expires in 10 minutes.`;
   const brandName = process.env.BRAND_NAME || 'Jolly Children Academic Center';
@@ -131,7 +148,12 @@ async function sendMfaCodeEmail(to, code) {
   // Try SendGrid first (HTTP API — avoids SMTP timeouts)
   if (sgMail) {
     try {
-      const from = process.env.FROM_EMAIL || process.env.SMTP_USER || 'no-reply@localhost';
+      const from = normalizeEmail(process.env.FROM_EMAIL || process.env.SMTP_USER || 'no-reply@localhost');
+      if (!isValidEmail(overrideTo)) {
+        console.warn(`[mailer] Invalid MFA recipient email. Falling back to console logging. to="${to}" override="${envOverride}"`);
+        console.log(`[MFA][FALLBACK] Verification code for ${to}: ${code}`);
+        return Promise.resolve({ accepted: [to], messageId: 'invalid-to-console-fallback' });
+      }
       if (!process.env.FROM_EMAIL) {
         console.warn('[mailer] FROM_EMAIL not set. SendGrid requires a verified sender/domain. Set FROM_EMAIL to a verified sender in your SendGrid account.');
       }
@@ -155,6 +177,11 @@ async function sendMfaCodeEmail(to, code) {
   // Fallback to SMTP; if it fails, log code to console
   const tx = createTransporter();
   try {
+    if (!isValidEmail(overrideTo)) {
+      console.warn(`[mailer] Invalid MFA recipient for SMTP path. Falling back to console logging. to="${to}" override="${envOverride}"`);
+      console.log(`[MFA][FALLBACK] Verification code for ${to}: ${code}`);
+      return Promise.resolve({ accepted: [to], messageId: 'invalid-to-console-fallback' });
+    }
     return await tx.sendMail({ from: tx._fromAddress, to: overrideTo, subject, text, html });
   } catch (err) {
     console.error('[mailer] SMTP send failed, falling back to console logging:', err && err.message ? err.message : err);
