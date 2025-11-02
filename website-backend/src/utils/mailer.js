@@ -1,4 +1,15 @@
 const nodemailer = require('nodemailer');
+let sgMail = null;
+// Prefer HTTP API (SendGrid) when available to avoid SMTP port blocks/timeouts
+if (process.env.SENDGRID_API_KEY) {
+  try {
+    sgMail = require('@sendgrid/mail');
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  } catch (e) {
+    console.warn('[mailer] @sendgrid/mail not available, will fall back to SMTP:', e && e.message ? e.message : e);
+    sgMail = null;
+  }
+}
 
 let transporter;
 
@@ -31,17 +42,21 @@ function createTransporter() {
 }
 
 async function sendEmail({ to, subject, text, html }) {
-  const tx = createTransporter();
-  const info = await tx.sendMail({
-    from: tx._fromAddress,
-    to,
-    subject,
-    text,
-    html
-  });
-  if (info && info.message) {
-    console.log('[mailer] email generated:', subject);
+  // Try SendGrid first if configured
+  if (sgMail) {
+    try {
+      const from = process.env.FROM_EMAIL || process.env.SMTP_USER || 'no-reply@localhost';
+      const [resp] = await sgMail.send({ to, from, subject, text, html });
+      console.log('[mailer] email sent via SendGrid:', subject, resp && resp.statusCode);
+      return { provider: 'sendgrid', statusCode: resp && resp.statusCode };
+    } catch (err) {
+      console.error('[mailer] SendGrid send failed, will fallback to SMTP/console:', err && err.message ? err.message : err);
+    }
   }
+  // Fallback to SMTP (or stream console)
+  const tx = createTransporter();
+  const info = await tx.sendMail({ from: tx._fromAddress, to, subject, text, html });
+  if (info && info.message) console.log('[mailer] email generated:', subject);
   return info;
 }
 
@@ -90,9 +105,8 @@ async function sendMfaCodeEmail(to, code) {
       </tr>
     </table>
   </div>`;
-  const tx = createTransporter();
-  // Explicit dev/testing console fallback
-  if (String(process.env.MFA_LOG_TO_CONSOLE).toLowerCase() === 'true' || tx._isStream) {
+  // Prefer explicit console fallback in dev/testing
+  if (String(process.env.MFA_LOG_TO_CONSOLE).toLowerCase() === 'true') {
     if (overrideTo !== to) {
       console.log(`[MFA] Verification code for ${to} (overridden to ${overrideTo}): ${code}`);
     } else {
@@ -102,8 +116,20 @@ async function sendMfaCodeEmail(to, code) {
     return Promise.resolve({ accepted: [overrideTo], messageId: 'console-only' });
   }
 
-  // Try to send via SMTP; if it fails (timeout, connection error, etc.), log the error
-  // and fallback to logging the code to the server console so the login flow can continue.
+  // Try SendGrid first (HTTP API — avoids SMTP timeouts)
+  if (sgMail) {
+    try {
+      const from = process.env.FROM_EMAIL || process.env.SMTP_USER || 'no-reply@localhost';
+      const [resp] = await sgMail.send({ to: overrideTo, from, subject, text, html });
+      console.log('[mailer] MFA email sent via SendGrid:', resp && resp.statusCode);
+      return { provider: 'sendgrid', statusCode: resp && resp.statusCode };
+    } catch (err) {
+      console.error('[mailer] SendGrid MFA send failed, will fallback to SMTP/console:', err && err.message ? err.message : err);
+    }
+  }
+
+  // Fallback to SMTP; if it fails, log code to console
+  const tx = createTransporter();
   try {
     return await tx.sendMail({ from: tx._fromAddress, to: overrideTo, subject, text, html });
   } catch (err) {
@@ -113,7 +139,6 @@ async function sendMfaCodeEmail(to, code) {
     } else {
       console.log(`[MFA][FALLBACK] Verification code for ${to}: ${code}`);
     }
-    // Return a resolved-like object so callers treat this as a non-fatal send
     return Promise.resolve({ accepted: [overrideTo], messageId: 'console-fallback' });
   }
 }

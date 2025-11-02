@@ -10,20 +10,21 @@
     "dev-db": "nodemon server-fixed.js"
   },
   "dependencies": {
+    "@sendgrid/mail": "^8.1.6",
     "@supabase/supabase-js": "^2.57.4",
-  "helmet": "^6.0.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
     "ejs": "^3.1.6",
     "express": "^4.17.3",
-    "express-session": "^1.17.2",
-    "multer": "^2.0.2",
     "express-rate-limit": "^6.7.0",
-  "sharp": "^0.32.4",
+    "express-session": "^1.17.2",
+    "helmet": "^6.0.0",
+    "multer": "^2.0.2",
     "nodemailer": "^6.7.3",
-    "pg": "^8.16.3"
+    "pg": "^8.16.3",
+    "sharp": "^0.32.4"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
