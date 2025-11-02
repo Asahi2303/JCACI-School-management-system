@@ -6,6 +6,7 @@ const multer = require('multer');
 const fs = require('fs');
 const crypto = require('crypto');
 const { sendMfaCodeEmail } = require('../utils/mailer');
+const { sendEmail } = require('../utils/mailer');
 
 // Middleware to check if user is authenticated
 const isAuthenticated = (req, res, next) => {
@@ -310,3 +311,22 @@ router.post('/settings/site-stats', isAuthenticated, adminController.updateSiteS
 
 // Export the router
 module.exports = router;
+
+// Admin-only: quick test mail endpoint to verify email delivery from the server
+// This sends a simple test email to the logged-in admin's email (or an optional ?to= param)
+// Keep it lightweight and avoid exposing publicly; relies on isAuthenticated middleware
+router.post('/test-mail', isAuthenticated, async (req, res) => {
+  try {
+    const to = (req.body && req.body.to) || (req.query && req.query.to) || (req.session.user && req.session.user.email);
+    if (!to) return res.status(400).json({ ok: false, error: 'No recipient resolved. Provide ?to= or ensure session.user.email is set.' });
+    const brand = process.env.BRAND_NAME || 'Jolly Children Academic Center';
+    const subject = `[${brand}] Test email`;
+    const text = `This is a test email from the ${brand} admin server.`;
+    const html = `<p>This is a <strong>test email</strong> from the ${brand} admin server.</p>`;
+    const info = await sendEmail({ to, subject, text, html });
+    return res.json({ ok: true, to, info: info && (info.provider ? { provider: info.provider, statusCode: info.statusCode } : { messageId: info.messageId }) });
+  } catch (err) {
+    console.error('test-mail error:', err && err.message ? err.message : err);
+    return res.status(500).json({ ok: false, error: 'Failed to send test email.' });
+  }
+});
