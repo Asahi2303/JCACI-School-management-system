@@ -1,30 +1,6 @@
 // filepath: website-backend/src/controllers/formController.js
-// Handles Contact Form submissions: validates input, basic spam checks, sends email via Nodemailer
-const nodemailer = require('nodemailer');
-
-// Lazy transporter (reuse after first creation)
-let transporter = null;
-function getTransporter() {
-  if (transporter) return transporter;
-  // Expect SMTP env vars; fallback to console transport if missing
-  const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_SECURE } = process.env;
-  if (SMTP_HOST && SMTP_PORT && SMTP_USER && SMTP_PASS) {
-    transporter = nodemailer.createTransport({
-      host: SMTP_HOST,
-      port: parseInt(SMTP_PORT, 10) || 587,
-      secure: String(SMTP_SECURE || '').toLowerCase() === 'true',
-      auth: { user: SMTP_USER, pass: SMTP_PASS }
-    });
-  } else {
-    transporter = nodemailer.createTransport({
-      streamTransport: true,
-      newline: 'unix',
-      buffer: true
-    });
-    console.warn('[ContactForm] SMTP credentials missing; using stream transport (emails not actually sent).');
-  }
-  return transporter;
-}
+// Handles Contact Form submissions: validates input, basic spam checks, sends email via unified sendEmail (SendGrid-first)
+const { sendEmail } = require('../utils/mailer');
 
 const validateEmail = (email) => /^(?!.{255,})([A-Z0-9._%+-]{1,64})@([A-Z0-9.-]+)\.[A-Z]{2,}$/i.test(email || '');
 
@@ -57,24 +33,30 @@ const handleContactForm = async (req, res) => {
       referer: req.headers['referer'] || 'N/A'
     };
 
-    const mailOptions = {
-      from: process.env.FROM_EMAIL || process.env.SMTP_USER || 'no-reply@example.com',
-      to: process.env.CONTACT_RECIPIENT || process.env.FROM_EMAIL || process.env.SMTP_USER || 'admin@example.com',
-      subject: `New Contact Form Message from ${name}`,
-      text: `You have received a new contact form submission.\n\nName: ${name}\nEmail: ${email}\nMessage:\n${message}\n\n--\nMeta:\nIP: ${meta.ip}\nUser-Agent: ${meta.ua}\nReferrer: ${meta.referer}`,
-      html: `<p>You have received a new contact form submission.</p>
+    const fromAddress = process.env.FROM_EMAIL || process.env.SMTP_USER || 'no-reply@example.com';
+    const toAddress = process.env.CONTACT_RECIPIENT || process.env.FROM_EMAIL || process.env.SMTP_USER || 'admin@example.com';
+    const subject = `New Contact Form Message from ${name}`;
+    const plain = `You have received a new contact form submission.\n\nName: ${name}\nEmail: ${email}\nMessage:\n${message}\n\n--\nMeta:\nIP: ${meta.ip}\nUser-Agent: ${meta.ua}\nReferrer: ${meta.referer}`;
+    const html = `<p>You have received a new contact form submission.</p>
              <p><strong>Name:</strong> ${escapeHtml(name)}<br>
              <strong>Email:</strong> ${escapeHtml(email)}</p>
              <p><strong>Message:</strong><br>${escapeHtml(message).replace(/\n/g,'<br>')}</p>
-             <hr><p style="font-size:12px;color:#666;">IP: ${escapeHtml(meta.ip)}<br>User-Agent: ${escapeHtml(meta.ua)}<br>Referrer: ${escapeHtml(meta.referer)}</p>`
-    };
+             <hr><p style="font-size:12px;color:#666;">IP: ${escapeHtml(meta.ip)}<br>User-Agent: ${escapeHtml(meta.ua)}<br>Referrer: ${escapeHtml(meta.referer)}</p>`;
 
-    const tx = getTransporter();
-    const info = await tx.sendMail(mailOptions);
-    if (info && info.messageId) {
-      console.log('[ContactForm] Email queued with id', info.messageId);
-    } else {
-      console.log('[ContactForm] Email processed (stream in dev).');
+    try {
+      const info = await sendEmail({ to: toAddress, subject, text: plain, html });
+      if (info && info.provider === 'sendgrid') {
+        console.log('[ContactForm] Email sent via SendGrid status:', info.statusCode);
+      } else if (info && info.messageId) {
+        console.log('[ContactForm] Email queued with id', info.messageId);
+      } else {
+        console.log('[ContactForm] Email processed (fallback/stream).');
+      }
+    } catch (mailErr) {
+      console.error('[ContactForm] sendEmail failed, fallback notice:', mailErr && mailErr.message ? mailErr.message : mailErr);
+      // Do not surface internal error details to user; treat as failure path below
+      if (acceptJson) return res.status(500).json({ error: 'Failed to send message' });
+      return res.redirect('/?error=' + encodeURIComponent('Failed to send message') + '#contact-form');
     }
 
     if (acceptJson) return res.json({ status: 'ok' });
