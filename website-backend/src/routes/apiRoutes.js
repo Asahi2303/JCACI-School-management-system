@@ -5,6 +5,11 @@ const Settings = require('../models/Settings');
 const apiController = require('../controllers/apiController');
 const formController = require('../controllers/formController');
 
+// Simple health endpoint for uptime checks and proxy diagnostics
+router.get('/health', (req, res) => {
+	res.json({ ok: true, uptime: process.uptime(), timestamp: Date.now() });
+});
+
 router.get('/testimonials', getTestimonialsData);
 router.get('/facilities', getFacilitiesData);
 
